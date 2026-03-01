@@ -1,0 +1,46 @@
+{
+    "restaurantes": [
+        {
+            "id": 1,
+            "nombre": "Sabor Azteca",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406505/alimentos/r2gksri9gosxobfo7jo2.jpg",
+            "categoria": "mexicana"
+        },
+        {
+            "id": 2,
+            "nombre": "Crunchy Chicken",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406596/alimentos/ugorvrr3qboc1vqool9v.jpg",
+            "categoria": "pollos"
+        },
+        {
+            "id": 3,
+            "nombre": "Elite Bistro",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406626/alimentos/o8itv2yk8pcfe81vg8di.jpg",
+            "categoria": "gourmet"
+        },
+        {
+            "id": 4,
+            "nombre": "Tokyo Roll House",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406659/alimentos/zzidpwch4jyu5gtydkvw.jpg",
+            "categoria": "japonesa"
+        },
+        {
+            "id": 5,
+            "nombre": "La Nonna Pizzeria",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406686/alimentos/d4scggorjgnjnwx2mvxy.jpg",
+            "categoria": "italiana"
+        },
+        {
+            "id": 6,
+            "nombre": "Burger City",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406725/alimentos/t1gaovteccyglcu1eaxb.jpg",
+            "categoria": "hamburguesas"
+        },
+        {
+            "id": 7,
+            "nombre": "Green Life Kitchen",
+            "imagen": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406922/alimentos/flnlailex66p4jqtgkis.jpg",
+            "categoria": "saludable"
+        }
+    ]
+}

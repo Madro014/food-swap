@@ -1,107 +1,111 @@
+import * as Haptics from 'expo-haptics';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import TarjetaDeComida from '../../compartido/componentes/TarjetaTinder';
 import { comprobarSiEstaCerca, pedirPermisosUbicacion } from '../../servicios/UbicacionServicio';
+import { useMatchesStore } from '../matches/useMatchesStore';
+import { styles } from './PlatosVista.styles';
 
-// aca traemos y juntamos todo: los platos de comida y la tarjeta que se mueve.
 export default function VistaDePlatos() {
-    const [comidasCerca, setComidasCerca] = useState<any[]>([]); // guardamos nuestros platillos
+    const [comidasCerca, setComidasCerca] = useState<any[]>([]);
     const [cargando, setCargando] = useState(true);
 
-    // todo esto ocurre al apenas entrar en la pantalla (como cuando abres los ojos y ves todo)
     useEffect(() => {
         async function cargarComidita() {
             const ubi = await pedirPermisosUbicacion();
 
-            // platos de mentira, para probar (simulandopues que es con internet)
             const platosFalsos = [
-                { id: 1, nombre: 'Pizza de Queso', restaurante: 'Pizzeria Luigi', foto: 'https://images.unsplash.com/photo-1513104890138-7c749659a591', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 2 },
-                { id: 2, nombre: 'Hamburguesa Gigante', restaurante: 'Burger Rey', foto: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 4 },
-                { id: 3, nombre: 'Tacos de Carne', restaurante: 'Don Taco', foto: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 8 } // Este esta muy lejos!
+                { id: 1, nombre: 'Tacos al Pastor', restaurante: 'Sabor Azteca', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406505/alimentos/r2gksri9gosxobfo7jo2.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 1.2 },
+                { id: 2, nombre: 'Combo Pollo Crujiente', restaurante: 'Crunchy Chicken', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406596/alimentos/ugorvrr3qboc1vqool9v.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 2.5 },
+                { id: 3, nombre: 'Plato Filet Mignon', restaurante: 'Elite Bistro', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406626/alimentos/o8itv2yk8pcfe81vg8di.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 4.1 },
+                { id: 4, nombre: 'Sushi Roll Dragón', restaurante: 'Tokyo Roll House', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406659/alimentos/zzidpwch4jyu5gtydkvw.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 1.8 },
+                { id: 5, nombre: 'Pizza Margarita', restaurante: 'La Nonna Pizzeria', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406686/alimentos/d4scggorjgnjnwx2mvxy.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 0.8 },
+                { id: 6, nombre: 'Hamburguesa Doble Bacon', restaurante: 'Burger City', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406725/alimentos/t1gaovteccyglcu1eaxb.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 3.2 },
+                { id: 7, nombre: 'Ensalada César', restaurante: 'Green Life Kitchen', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406922/alimentos/flnlailex66p4jqtgkis.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 2.9 }
             ];
 
-            // ahora vamos si los platos estan a menos de 5 kilometros de nosotros
-            if (ubi) { // si logramos tener la ubicacion de tu telefono
+            if (ubi) {
                 const platosFiltrados = platosFalsos.filter(platon => {
-                    // aca llamamos a nuestro detector magico de cercania
                     const estaCerquita = comprobarSiEstaCerca(ubi.latitud, ubi.longitud, platon.lat, platon.lon);
-                    // o si la distancia en el papel dice menos de 5km, lo mostramos
                     return platon.distancia <= 5;
                 });
-                setComidasCerca(platosFiltrados);
+                setComidasCerca(platosFiltrados.reverse()); // reverse para que el primero en el stack sea el de indice mas alto (se ve arriba)
             } else {
-                setComidasCerca(platosFalsos); // mostramos todo si no sabemos tu ubicacion
+                setComidasCerca(platosFalsos.reverse());
             }
 
-            setCargando(false); // ya terminamos de pensar!
+            setCargando(false);
         }
 
         cargarComidita();
     }, []);
 
-    // accion cuando el usuario desliza hacia la derecha (hace match o le gusta)
-    const manejarMeGusta = (plato: any) => {
-        Alert.alert("¡Genial!", "Le has dado me gusta a " + plato.nombre);
-        // sacamos el plato de la lista para ver el siguiente
+    const manejarMeGusta = async (plato: any) => {
+        console.log("¡Me gusta! " + plato.nombre);
+
+        // Efecto haptico al dar "Me gusta" (Vibración de Éxito)
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+        // Guardamos en el estado de Zustand
+        useMatchesStore.getState().agregarMatch(plato);
+
         setComidasCerca((platosViejos) => platosViejos.filter((p) => p.id !== plato.id));
     };
 
-    // accion cuando el usuario desliza hacia la izquierda (niega o no le gusta)
-    const manejarNoMeGusta = (plato: any) => {
-        // puedes poner un log si prefieres no mostrar alerta por cada rechazo
-        console.log("Has rechazado a " + plato.nombre);
-        // sacamos el plato de la lista para ver el siguiente
+    const manejarNoMeGusta = async (plato: any) => {
+        console.log("Rechazado: " + plato.nombre);
+
+        // Efecto haptico al dar "No me gusta" (Vibración de Ligero toque / Error)
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
         setComidasCerca((platosViejos) => platosViejos.filter((p) => p.id !== plato.id));
     };
 
     if (cargando) {
         return (
-            <View style={hacerLindo.caja}>
-                <Text style={hacerLindo.textoLetras}>buscando comida rica a 5km de ti...</Text>
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF6B6B" />
+                <Text style={styles.loadingText}>Buscando comida rica cerca...</Text>
             </View>
         );
     }
 
-    // devolvemos y dibujamos en la pantalla las tarjetas de platos
     return (
-        <View style={hacerLindo.caja}>
-            <Text style={hacerLindo.tituloLindo}>Platos a 5 KM 🍔</Text>
+        <View style={styles.container}>
+            <View style={styles.headerSpace}>
+                <Text style={styles.title}>FoodMatchApp</Text>
+            </View>
 
-            <View style={hacerLindo.cajaTarjetas}>
-                {comidasCerca.map((plato) => (
-                    <TarjetaDeComida
-                        key={plato.id}
-                        plato={plato}
-                        alAceptar={manejarMeGusta}
-                        alRechazar={manejarNoMeGusta}
-                    />
-                ))}
+            <View style={styles.cardsContainer}>
+                {comidasCerca.length > 0 ? (
+                    comidasCerca.map((plato) => (
+                        <TarjetaDeComida
+                            key={plato.id}
+                            plato={plato}
+                            alAceptar={manejarMeGusta}
+                            alRechazar={manejarNoMeGusta}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.noMoreCardsContainer}>
+                        <Text style={styles.noMoreCardsText}>¡No hay más platos!</Text>
+                        <Text style={styles.noMoreCardsSub}>Vuelve más tarde o amplía tu búsqueda.</Text>
+                    </View>
+                )}
+            </View>
+
+            {/* botones decorativos para indicar a que lado deslizar */}
+            <View style={styles.actionsContainer}>
+                <View style={styles.actionButton}>
+                    <Text style={[styles.actionIcon, { color: '#F87171' }]}>❌</Text>
+                </View>
+                <View style={[styles.actionButton, { width: 50, height: 50, borderRadius: 25 }]}>
+                    <Text style={[styles.actionIcon, { fontSize: 22, color: '#38BDF8' }]}>⭐</Text>
+                </View>
+                <View style={styles.actionButton}>
+                    <Text style={[styles.actionIcon, { color: '#4ADE80' }]}>💚</Text>
+                </View>
             </View>
         </View>
     );
 }
-
-const hacerLindo = StyleSheet.create({
-    caja: {
-        flex: 1, // ocupa toda la pantalla del celu, iphone o compu
-        alignItems: 'center', // al medio de los lados
-        justifyContent: 'center', // al medio de arriba-abajo
-        backgroundColor: '#fff7ed', // color cremita clarito de fondo
-    },
-    tituloLindo: {
-        fontSize: 28, // grandote
-        fontWeight: 'bold', // gordito
-        color: '#ea580c', // color naranjita comida
-        fontFamily: 'Inter_700Bold', // letricas amables
-        marginBottom: 20,
-    },
-    cajaTarjetas: {
-        height: 500, // alto de las tarjetas
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textoLetras: {
-        fontSize: 16,
-        fontFamily: 'Inter_400Regular', // letricas normales
-    }
-});
