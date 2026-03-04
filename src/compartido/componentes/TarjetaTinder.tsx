@@ -1,13 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Dimensions, Image, Text, View } from 'react-native';
+import { Image, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { styles } from './TarjetaTinder.styles';
 
-const AnchoPantalla = Dimensions.get('window').width;
-
 export default function TarjetaDeComida({ plato, alAceptar, alRechazar }: any) {
+    const { width: AnchoPantalla } = useWindowDimensions();
     const x = useSharedValue(0);
     const y = useSharedValue(0);
     const comienzoX = useSharedValue(0);

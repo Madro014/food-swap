@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { Dimensions, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { useWindowDimensions, View } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -10,52 +10,77 @@ import Animated, {
 } from 'react-native-reanimated';
 import { styles } from './FondoAnimadoComida.styles';
 
-const { width, height } = Dimensions.get('window');
-
 const FOOD_EMOJIS = ['🍔', '🍕', '🌮', '🍩', '🍣', '🍰', '🥑', '🍗', '🍟', '🍲', '🥩', '🥓', '🍳'];
 
-const FloatingFood = ({ emoji, delay, duration, startX, size }: { emoji: string; delay: number; duration: number; startX: number; size: number }) => {
-    const translateY = useSharedValue(height + 100);
-    const rotateY = useSharedValue(0); // For spinning effect
+// Valores pseudo-aleatorios estables basados en el índice (sin Math.random en render)
+function pseudoRandom(seed: number, offset: number): number {
+    return ((Math.sin((seed + offset) * 9301 + 49297) * 233280) % 1 + 1) % 1;
+}
 
-    useEffect(() => {
-        // Float upwards
-        translateY.value = withDelay(
-            delay,
-            withRepeat(
-                withTiming(-150, {
-                    duration: duration,
-                    easing: Easing.linear,
-                }),
-                -1, // Infinite repeat
-                false // Do not reverse (go bottom to top)
-            )
-        );
+function generarEmojiConfig(screenWidth: number, screenHeight: number, seed: number) {
+    const pr = (o: number) => pseudoRandom(seed, o);
+    return {
+        emoji: FOOD_EMOJIS[Math.floor(pr(0) * FOOD_EMOJIS.length)],
+        delay: pr(1) * 5000,
+        duration: 12000 + pr(2) * 10000,
+        startX: pr(3) * screenWidth * 0.9,
+        size: 25 + pr(4) * 35,
+        startY: screenHeight + 100,
+    };
+}
 
-        // Spin around
-        rotateY.value = withDelay(
-            delay,
-            withRepeat(
-                withTiming(360, {
-                    duration: duration * 1.5,
-                    easing: Easing.linear,
-                }),
-                -1, // Infinite repeat
-                false
-            )
-        );
-    }, []);
+// Hook personalizado: 'use no memo' le indica al React Compiler que omita la optimización
+// de este hook, permitiendo que los sharedValues de Reanimated se muten correctamente.
+function useFloatAnimation(startY: number, delay: number, duration: number) {
+    'use no memo';
+    const translateY = useSharedValue(startY);
+    translateY.value = withDelay(
+        delay,
+        withRepeat(
+            withTiming(-150, { duration, easing: Easing.linear }),
+            -1,
+            false
+        )
+    );
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateY: translateY.value },
-                { rotate: `${rotateY.value}deg` },
-            ],
-            left: startX,
-            fontSize: size,
-        };
-    });
+    const rotateVal = useSharedValue(0);
+    rotateVal.value = withDelay(
+        delay,
+        withRepeat(
+            withTiming(360, { duration: duration * 1.5, easing: Easing.linear }),
+            -1,
+            false
+        )
+    );
+
+    return { translateY, rotateVal };
+}
+
+const FloatingFood = ({
+    emoji,
+    delay,
+    duration,
+    startX,
+    size,
+    startY,
+}: {
+    emoji: string;
+    delay: number;
+    duration: number;
+    startX: number;
+    size: number;
+    startY: number;
+}) => {
+    const { translateY, rotateVal } = useFloatAnimation(startY, delay, duration);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateY: translateY.value },
+            { rotate: `${rotateVal.value}deg` },
+        ],
+        left: startX,
+        fontSize: size,
+    }));
 
     return (
         <Animated.Text style={[styles.emoji, animatedStyle]}>
@@ -65,24 +90,16 @@ const FloatingFood = ({ emoji, delay, duration, startX, size }: { emoji: string;
 };
 
 export const FondoAnimadoComida = () => {
-    // Generate random data for emojis only once so it doesn't jump on re-renders
-    const floatingEmojis = useMemo(() => {
-        const items = [];
-        const NUM_EMOJIS = 15;
+    const { width, height } = useWindowDimensions();
 
-        for (let i = 0; i < NUM_EMOJIS; i++) {
-            const randomEmoji = FOOD_EMOJIS[Math.floor(Math.random() * FOOD_EMOJIS.length)];
-            items.push({
+    const floatingEmojis = useMemo(
+        () =>
+            Array.from({ length: 15 }, (_, i) => ({
                 id: i,
-                emoji: randomEmoji,
-                delay: Math.random() * 5000, // Up to 5 sec delay
-                duration: 12000 + Math.random() * 10000, // 12-22 sec duration
-                startX: Math.random() * width * 0.9, // Spread across screen width
-                size: 25 + Math.random() * 35, // Size between 25 and 60
-            });
-        }
-        return items;
-    }, []);
+                ...generarEmojiConfig(width, height, i),
+            })),
+        [width, height]
+    );
 
     return (
         <View style={styles.container} pointerEvents="none">
@@ -94,6 +111,7 @@ export const FondoAnimadoComida = () => {
                     duration={item.duration}
                     startX={item.startX}
                     size={item.size}
+                    startY={item.startY}
                 />
             ))}
         </View>

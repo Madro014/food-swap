@@ -1,17 +1,35 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { SymbolView } from 'expo-symbols';
+import React, { useEffect, useReducer } from 'react';
 import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import TarjetaDeComida from '../../compartido/componentes/TarjetaTinder';
-import { comprobarSiEstaCerca, pedirPermisosUbicacion } from '../../servicios/UbicacionServicio';
+import { pedirPermisosUbicacion } from '../../servicios/UbicacionServicio';
 import { useAuthStore } from '../auth/useAuthStore';
 import { useMatchesStore } from '../matches/useMatchesStore';
 import { styles } from './PlatosVista.styles';
 
+type Estado = { comidasCerca: any[]; cargando: boolean };
+type Accion =
+    | { type: 'CARGANDO' }
+    | { type: 'LISTO'; payload: any[] }
+    | { type: 'QUITAR'; id: number };
+
+function reducer(estado: Estado, accion: Accion): Estado {
+    switch (accion.type) {
+        case 'CARGANDO':
+            return { ...estado, cargando: true };
+        case 'LISTO':
+            return { comidasCerca: accion.payload, cargando: false };
+        case 'QUITAR':
+            return { ...estado, comidasCerca: estado.comidasCerca.filter((p) => p.id !== accion.id) };
+        default:
+            return estado;
+    }
+}
+
 export default function VistaDePlatos() {
-    const [comidasCerca, setComidasCerca] = useState<any[]>([]);
-    const [cargando, setCargando] = useState(true);
+    const [{ comidasCerca, cargando }, dispatch] = useReducer(reducer, { comidasCerca: [], cargando: true });
     const { userName, userAvatar, logout } = useAuthStore();
     const router = useRouter();
 
@@ -34,17 +52,11 @@ export default function VistaDePlatos() {
                 { id: 7, nombre: 'Ensalada César', restaurante: 'Green Life Kitchen', foto: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406922/alimentos/flnlailex66p4jqtgkis.jpg', lat: ubi?.latitud || 0, lon: ubi?.longitud || 0, distancia: 2.9 }
             ];
 
-            if (ubi) {
-                const platosFiltrados = platosFalsos.filter(platon => {
-                    const estaCerquita = comprobarSiEstaCerca(ubi.latitud, ubi.longitud, platon.lat, platon.lon);
-                    return platon.distancia <= 5;
-                });
-                setComidasCerca(platosFiltrados.reverse()); // reverse para que el primero en el stack sea el de indice mas alto (se ve arriba)
-            } else {
-                setComidasCerca(platosFalsos.reverse());
-            }
+            const lista = ubi
+                ? platosFalsos.filter((p) => p.distancia <= 5).reverse()
+                : platosFalsos.reverse();
 
-            setCargando(false);
+            dispatch({ type: 'LISTO', payload: lista });
         }
 
         cargarComidita();
@@ -52,23 +64,15 @@ export default function VistaDePlatos() {
 
     const manejarMeGusta = async (plato: any) => {
         console.log("¡Me gusta! " + plato.nombre);
-
-        // Efecto haptico al dar "Me gusta" (Vibración de Éxito)
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
-        // Guardamos en el estado de Zustand
         useMatchesStore.getState().agregarMatch(plato);
-
-        setComidasCerca((platosViejos) => platosViejos.filter((p) => p.id !== plato.id));
+        dispatch({ type: 'QUITAR', id: plato.id });
     };
 
     const manejarNoMeGusta = async (plato: any) => {
         console.log("Rechazado: " + plato.nombre);
-
-        // Efecto haptico al dar "No me gusta" (Vibración de Ligero toque / Error)
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-
-        setComidasCerca((platosViejos) => platosViejos.filter((p) => p.id !== plato.id));
+        dispatch({ type: 'QUITAR', id: plato.id });
     };
 
     if (cargando) {
@@ -104,7 +108,7 @@ export default function VistaDePlatos() {
                     </View>
 
                     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                        <MaterialIcons name="logout" size={20} color="#FF6B6B" />
+                        <SymbolView name="rectangle.portrait.and.arrow.right" size={20} tintColor="#FF6B6B" />
                     </TouchableOpacity>
                 </View>
             </View>
