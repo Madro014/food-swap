@@ -1,32 +1,11 @@
-import * as Haptics from 'expo-haptics';
+import { TarjetaMatch } from '@/src/compartido/componentes/moleculas/TarjetaMatch';
 import React from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from './ListaMatchesVista.styles';
+import { FlatList, Text, View } from 'react-native';
 import { PlatoType, useMatchesStore } from './useMatchesStore';
+import { styles } from './ListaMatchesVista.styles';
 
 export default function ListaMatchesVista() {
-    // Aquí traemos los matches (la lista) desde nuestro almacenamiento global
     const { matches } = useMatchesStore();
-
-    // Componente individual de fila (Cada platillo que nos gustó)
-    const renderFilaMatch = ({ item }: { item: PlatoType }) => (
-        <View style={styles.matchCard}>
-            <Image source={{ uri: item.foto }} style={styles.matchImage} />
-            <View style={styles.matchInfo}>
-                <Text style={styles.matchName}>{item.nombre}</Text>
-                <Text style={styles.matchRestaurant}>🍽️ {item.restaurante} • 📍 {item.distancia}km</Text>
-            </View>
-            <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => {
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                    console.log("Mandar a pedir:", item.nombre);
-                }}
-            >
-                <Text style={styles.actionIcon}>🛵</Text>
-            </TouchableOpacity>
-        </View>
-    );
 
     return (
         <View style={styles.container}>
@@ -49,7 +28,7 @@ export default function ListaMatchesVista() {
                 <FlatList
                     data={matches}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderFilaMatch}
+                    renderItem={({ item }: { item: PlatoType }) => <TarjetaMatch plato={item} />}
                     contentContainerStyle={styles.listContent}
                     showsVerticalScrollIndicator={false}
                 />

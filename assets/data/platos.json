@@ -1,0 +1,9 @@
+[
+    { "id": 1, "nombre": "Tacos al Pastor", "restaurante": "Sabor Azteca", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406505/alimentos/r2gksri9gosxobfo7jo2.jpg", "lat": 0, "lon": 0, "distancia": 1.2 },
+    { "id": 2, "nombre": "Combo Pollo Crujiente", "restaurante": "Crunchy Chicken", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406596/alimentos/ugorvrr3qboc1vqool9v.jpg", "lat": 0, "lon": 0, "distancia": 2.5 },
+    { "id": 3, "nombre": "Plato Filet Mignon", "restaurante": "Elite Bistro", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406626/alimentos/o8itv2yk8pcfe81vg8di.jpg", "lat": 0, "lon": 0, "distancia": 4.1 },
+    { "id": 4, "nombre": "Sushi Roll Dragón", "restaurante": "Tokyo Roll House", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406659/alimentos/zzidpwch4jyu5gtydkvw.jpg", "lat": 0, "lon": 0, "distancia": 1.8 },
+    { "id": 5, "nombre": "Pizza Margarita", "restaurante": "La Nonna Pizzeria", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406686/alimentos/d4scggorjgnjnwx2mvxy.jpg", "lat": 0, "lon": 0, "distancia": 0.8 },
+    { "id": 6, "nombre": "Hamburguesa Doble Bacon", "restaurante": "Burger City", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406725/alimentos/t1gaovteccyglcu1eaxb.jpg", "lat": 0, "lon": 0, "distancia": 3.2 },
+    { "id": 7, "nombre": "Ensalada César", "restaurante": "Green Life Kitchen", "foto": "https://res.cloudinary.com/dzdgdqoap/image/upload/v1772406922/alimentos/flnlailex66p4jqtgkis.jpg", "lat": 0, "lon": 0, "distancia": 2.9 }
+]

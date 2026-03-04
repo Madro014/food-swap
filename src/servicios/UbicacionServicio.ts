@@ -1,17 +1,19 @@
 import * as Ubicacion from 'expo-location';
 
-// para pedir permiso al celular y saber donde estamos bro
 export async function pedirPermisosUbicacion() {
-  const respuesta = await Ubicacion.requestForegroundPermissionsAsync();
-  if (respuesta.status !== 'granted') {
-    return null; // el usuario dijo que no
-  }
-  
-  const ubicacion = await Ubicacion.getCurrentPositionAsync({});
-  return {
-    latitud: ubicacion.coords.latitude,
-    longitud: ubicacion.coords.longitude
-  };
+    try {
+        const respuesta = await Ubicacion.requestForegroundPermissionsAsync();
+        if (respuesta.status !== 'granted') {
+            return null;
+        }
+        const ubicacion = await Ubicacion.getCurrentPositionAsync({});
+        return {
+            latitud: ubicacion.coords.latitude,
+            longitud: ubicacion.coords.longitude,
+        };
+    } catch {
+        return null;
+    }
 }
 
 // para saber si la comida esta cerca, a 5 kilometros o menos.
