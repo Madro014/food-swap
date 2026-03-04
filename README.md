@@ -323,7 +323,7 @@ npx expo start --web
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack Tecnologico
 
 | Tecnología   | Versión |
 | ------------ | ------- |
