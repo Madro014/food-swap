@@ -3,9 +3,16 @@ import React from 'react';
 import { Image, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { PlatoType } from '../../funcionalidades/matches/useMatchesStore';
 import { styles } from './TarjetaTinder.styles';
 
-export default function TarjetaDeComida({ plato, alAceptar, alRechazar }: any) {
+interface TarjetaDeComidaProps {
+    plato: PlatoType;
+    alAceptar: (plato: PlatoType) => void;
+    alRechazar: (plato: PlatoType) => void;
+}
+
+export default function TarjetaDeComida({ plato, alAceptar, alRechazar }: TarjetaDeComidaProps) {
     const { width: AnchoPantalla } = useWindowDimensions();
     const x = useSharedValue(0);
     const y = useSharedValue(0);

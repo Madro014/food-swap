@@ -5,10 +5,10 @@ export const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         overflow: 'hidden',
         backgroundColor: 'transparent',
-        zIndex: -1, // Ensure it stays in the background
+        zIndex: -1, // asegura de que permanezca en segundo plano (osea por detras de todo)
     },
     emoji: {
         position: 'absolute',
-        opacity: 0.3, // Subtle opacity
+        opacity: 0.3, // opacidad
     },
 });
