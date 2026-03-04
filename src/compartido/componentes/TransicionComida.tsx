@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 9999,
-        elevation: 9999,
+        boxShadow: '0px 0px 0px 9999px rgba(0,0,0,0)',
     },
     circle: {
         width: 100,
