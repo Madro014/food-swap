@@ -1,14 +1,24 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import TarjetaDeComida from '../../compartido/componentes/TarjetaTinder';
 import { comprobarSiEstaCerca, pedirPermisosUbicacion } from '../../servicios/UbicacionServicio';
+import { useAuthStore } from '../auth/useAuthStore';
 import { useMatchesStore } from '../matches/useMatchesStore';
 import { styles } from './PlatosVista.styles';
 
 export default function VistaDePlatos() {
     const [comidasCerca, setComidasCerca] = useState<any[]>([]);
     const [cargando, setCargando] = useState(true);
+    const { userName, userAvatar, logout } = useAuthStore();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        logout();
+        router.replace('/login');
+    };
 
     useEffect(() => {
         async function cargarComidita() {
@@ -73,7 +83,30 @@ export default function VistaDePlatos() {
     return (
         <View style={styles.container}>
             <View style={styles.headerSpace}>
-                <Text style={styles.title}>FoodMatchApp</Text>
+                {/* Logo and App Name */}
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772550710/foodmatch_osnrsz.png' }}
+                        style={styles.logoImage}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.title}>FoodMatch</Text>
+                </View>
+
+                {/* User Info and Logout */}
+                <View style={styles.userInfoContainer}>
+                    <View style={styles.userProfile}>
+                        <Image
+                            source={{ uri: userAvatar || 'https://api.dicebear.com/7.x/notionists/png?seed=Felix&backgroundColor=f3f4f6' }}
+                            style={styles.userAvatar}
+                        />
+                        <Text style={styles.userName} numberOfLines={1}>{userName || 'Invitado'}</Text>
+                    </View>
+
+                    <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                        <MaterialIcons name="logout" size={20} color="#FF6B6B" />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <View style={styles.cardsContainer}>
