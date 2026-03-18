@@ -1,0 +1,170 @@
+// Food Swap - DBML v2
+// Docs: https://dbml.dbdiagram.io/docs
+
+// ----------------------------------------------
+// ENUMS
+// ----------------------------------------------
+
+Enum tipo_swipe {
+  like
+  dislike
+}
+
+Enum estado_match {
+  activo
+  descartado
+}
+
+Enum tipo_notificacion {
+  nuevo_match
+  nuevo_mensaje
+  recordatorio
+}
+
+// ----------------------------------------------
+// TABLAS PRINCIPALES
+// ----------------------------------------------
+
+Table usuarios {
+  id bigint [pk, increment]
+  nombre varchar(120) [not null]
+  correo varchar(160) [not null, unique]
+  contrasena_hash varchar(255) [not null]
+  avatar_url varchar(300)
+  creado_en timestamp [not null, default: `now()`]
+  actualizado_en timestamp [not null, default: `now()`]
+}
+
+Table restaurantes {
+  id bigint [pk, increment]
+  nombre varchar(140) [not null, unique]
+  categoria varchar(80) [not null]
+  imagen_url varchar(300)
+  creado_en timestamp [not null, default: `now()`]
+}
+
+Table platos {
+  id bigint [pk, increment]
+  restaurante_id bigint [not null]
+  nombre varchar(140) [not null]
+  foto_url varchar(300)
+  distancia_km decimal(5,2) [not null, default: 0]
+  activo boolean [not null, default: true]
+  creado_en timestamp [not null, default: `now()`]
+
+  indexes {
+    (restaurante_id)
+  }
+}
+
+// Historial de decisiones tipo Tinder
+Table swipes {
+  id bigint [pk, increment]
+  usuario_id bigint [not null]
+  plato_id bigint [not null]
+  decision tipo_swipe [not null]
+  creado_en timestamp [not null, default: `now()`]
+
+  indexes {
+    (usuario_id, plato_id) [unique]
+    (usuario_id, decision)
+  }
+}
+
+// Cuando hay like útil para persistir lista de matches
+Table matches {
+  id bigint [pk, increment]
+  usuario_id bigint [not null]
+  plato_id bigint [not null]
+  estado estado_match [not null, default: 'activo']
+  creado_en timestamp [not null, default: `now()`]
+
+  indexes {
+    (usuario_id, plato_id) [unique]
+  }
+}
+
+Table mensajes {
+  id bigint [pk, increment]
+  emisor_id bigint [not null]
+  receptor_id bigint [not null]
+  contenido text [not null]
+  leido boolean [not null, default: false]
+  creado_en timestamp [not null, default: `now()`]
+
+  indexes {
+    (receptor_id, leido)
+  }
+}
+
+Table notificaciones {
+  id bigint [pk, increment]
+  usuario_id bigint [not null, note: 'quien recibe la notificación']
+  actor_id bigint [note: 'quien ocasiona la notificación']
+  tipo tipo_notificacion [not null]
+  referencia_tabla varchar(30) [not null, note: 'matches | mensajes | platos']
+  referencia_id bigint [not null]
+  leida boolean [not null, default: false]
+  creada_en timestamp [not null, default: `now()`]
+
+  indexes {
+    (usuario_id, leida)
+  }
+}
+
+// ----------------------------------------------
+// RELACIONES
+// ----------------------------------------------
+
+Ref: platos.restaurante_id > restaurantes.id
+
+Ref: swipes.usuario_id > usuarios.id
+Ref: swipes.plato_id > platos.id
+
+Ref: matches.usuario_id > usuarios.id
+Ref: matches.plato_id > platos.id
+
+Ref: mensajes.emisor_id > usuarios.id
+Ref: mensajes.receptor_id > usuarios.id
+
+Ref: notificaciones.usuario_id > usuarios.id
+Ref: notificaciones.actor_id > usuarios.id
+
+// ----------------------------------------------
+// REGISTROS DE PRUEBA (Data Dummy)
+// ----------------------------------------------
+
+Records usuarios(id, nombre, correo, avatar_url) {
+  1, 'Pepito Perez', 'pepito@example.com', 'https://api.dicebear.com/7.x/notionists/png?seed=Pepito'
+  2, 'Daniela Gómez', 'daniela@example.com', 'https://api.dicebear.com/7.x/notionists/png?seed=Daniela'
+}
+
+Records restaurantes(id, nombre, categoria) {
+  1, 'Sabor Azteca', 'mexicana'
+  2, 'Tokyo Roll House', 'japonesa'
+}
+
+Records platos(id, restaurante_id, nombre, distancia_km, activo) {
+  1, 1, 'Tacos al Pastor', 1.20, true
+  2, 2, 'Sushi Roll Dragón', 1.80, true
+}
+
+Records swipes(id, usuario_id, plato_id, decision) {
+  1, 1, 1, 'like'
+  2, 2, 1, 'like'
+  3, 1, 2, 'dislike'
+}
+
+Records matches(id, usuario_id, plato_id, estado) {
+  1, 1, 1, 'activo'
+  2, 2, 1, 'activo'
+}
+
+Records mensajes(id, emisor_id, receptor_id, contenido, leido) {
+  1, 1, 2, 'Hola, ¿te gustaron los tacos?', false
+}
+
+Records notificaciones(id, usuario_id, actor_id, tipo, referencia_tabla, referencia_id, leida) {
+  1, 1, 2, 'nuevo_match', 'matches', 1, false
+  2, 2, 1, 'nuevo_mensaje', 'mensajes', 1, false
+}
