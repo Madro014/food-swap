@@ -12,12 +12,13 @@ export const LoginVista = () => {
     const transicionRef = useRef<TransicionComidaRef>(null);
     const textos = TEXTOS_AUTH.login;
 
-    const handleLoginSubmit = (email: string) => {
-        loginAction(email.split('@')[0]);
+    const handleLoginSubmit = (email: string, rol: 'cliente' | 'negocio') => {
+        loginAction(email.split('@')[0], rol);
+        const rutaDestino = rol === 'negocio' ? '/(wizard)' : '/(tabs)';
         if (transicionRef.current) {
-            transicionRef.current.iniciar(() => router.replace('/(tabs)'));
+            transicionRef.current.iniciar(() => router.replace(rutaDestino as any));
         } else {
-            router.replace('/(tabs)');
+            router.replace(rutaDestino as any);
         }
     };
 
