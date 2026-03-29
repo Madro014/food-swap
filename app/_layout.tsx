@@ -15,6 +15,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const userName = useAuthStore(state => state.userName);
+  const rol = useAuthStore(state => state.rol);
+  const platosNegocio = useAuthStore(state => state.platosNegocio);
   const router = useRouter();
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
@@ -35,11 +37,19 @@ export default function RootLayout() {
         // Redirigir siempre a login si no tienen nombre guardado
         setTimeout(() => router.replace('/login'), 10);
       } else if (userName && isInAuthGroup) {
-        // Si se han logueado, redirigilos a las tabs
-        setTimeout(() => router.replace('/(tabs)'), 10);
+        // Si se han logueado, redirigilos a su lugar de inicio según rol
+        if (rol === 'negocio') {
+            if (platosNegocio && platosNegocio.length > 0) {
+                setTimeout(() => router.replace('/(negocio)' as any), 10);
+            } else {
+                setTimeout(() => router.replace('/(wizard)' as any), 10);
+            }
+        } else {
+            setTimeout(() => router.replace('/(tabs)' as any), 10);
+        }
       }
     }
-  }, [letrasCargadas, rootNavigationState?.key, userName, segments]);
+  }, [letrasCargadas, rootNavigationState?.key, userName, rol, platosNegocio, segments, router]);
 
   if (!letrasCargadas) {
     return null; // s no hay letras, no mostramos nada todavia
