@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { RegistroVista } from '../src/funcionalidades/auth/RegistroVista';
+import { RegistroVista } from '@Global/funcionalidades/auth/RegistroVista';
 
 export default function RegistroScreen() {
     return (

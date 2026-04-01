@@ -1,0 +1,107 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fef5f0',
+        overflow: 'hidden',
+    },
+    containerWeb: {
+        flexDirection: 'row',
+    },
+    webBrandSide: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: '50%',
+        backgroundColor: '#FF6B35',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+    },
+    webBrandSideBackground: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        opacity: 0.3,
+    },
+    webBrandTextContainer: {
+        padding: 40,
+        maxWidth: 500,
+        alignItems: 'flex-start',
+        zIndex: 10,
+    },
+    webLogo: {
+        width: 320,
+        height: 120,
+        marginBottom: 40,
+        tintColor: '#ffffff',
+    },
+    webHeadline: {
+        fontSize: 48,
+        fontFamily: 'Inter_700Bold',
+        color: '#ffffff',
+        marginBottom: 16,
+        lineHeight: 56,
+    },
+    webSubHeadline: {
+        fontSize: 20,
+        fontFamily: 'Inter_400Regular',
+        color: '#fff0e9',
+        lineHeight: 28,
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 30,
+        zIndex: 1,
+    },
+    contentWeb: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: '50%',
+        backgroundColor: '#fef5f0',
+        paddingHorizontal: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    contentInnerMobile: {
+        width: '100%',
+    },
+    formContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: 32,
+        padding: 24,
+        shadowColor: '#322e2b',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.06,
+        shadowRadius: 20,
+        elevation: 5,
+    },
+    formContainerWeb: {
+        width: '100%',
+        maxWidth: 480,
+        minHeight: 580,
+        padding: 48,
+        backgroundColor: '#ffffff',
+        shadowOpacity: 0.04,
+        shadowRadius: 40,
+        shadowOffset: { width: 0, height: 20 },
+    },
+    linkContainer: {
+        marginTop: 24,
+        alignItems: 'center',
+    },
+    linkText: {
+        fontSize: 15,
+        fontFamily: 'Inter_400Regular',
+        color: '#605a57',
+    },
+    linkTextBold: {
+        color: '#FF6B35',
+        fontFamily: 'Inter_700Bold',
+    },
+});

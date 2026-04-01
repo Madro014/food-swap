@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import ListaMatchesVista from '../../src/funcionalidades/matches/ListaMatchesVista';
+import ListaMatchesVista from '@Global/funcionalidades/matches/ListaMatchesVista';
 
 export default function MatchesTabScreen() {
   return (
