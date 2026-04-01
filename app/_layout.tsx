@@ -1,8 +1,9 @@
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuthStore } from '@/src/funcionalidades/auth/useAuthStore';
-import { Inter_400Regular, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
+import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
+import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, useFonts } from '@expo-google-fonts/inter';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
+import { Platform, StatusBar as RNStatusBar } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -24,7 +25,9 @@ export default function RootLayout() {
   // carga las letras Inter que nos regalo gogle fonts
   const [letrasCargadas] = useFonts({
     Inter_400Regular,
+    Inter_600SemiBold,
     Inter_700Bold,
+    Inter_800ExtraBold,
   });
 
   useEffect(() => {
@@ -51,6 +54,13 @@ export default function RootLayout() {
     }
   }, [letrasCargadas, rootNavigationState?.key, userName, rol, platosNegocio, segments, router]);
 
+  useEffect(() => {
+    // Forzar ocultar la barra de estado del sistema (hora, bateria, etc) al arrancar
+    if (Platform.OS !== 'web') {
+      RNStatusBar.setHidden(true, 'fade');
+    }
+  }, []);
+
   if (!letrasCargadas) {
     return null; // s no hay letras, no mostramos nada todavia
   }
@@ -64,7 +74,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar hidden={true} />
     </ThemeProvider>
   );
 }

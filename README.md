@@ -54,6 +54,23 @@ Join our community of developers creating universal apps.
 
 Aplicación móvil híbrida construida con **React Native (Expo SDK 54)** y **TypeScript**.
 
+## Nota de estructura
+
+Todo lo alusivo al backend quedó centralizado en la carpeta raíz `backend/`.
+
+```text
+backend/
+├── authService.ts
+├── contracts/
+│   └── api.ts
+├── geoService.ts
+├── platosService.ts
+├── README.md
+└── UbicacionServicio.ts
+```
+
+Para importar desde la app se usa el alias `@backend/*`.
+
 ---
 
 ## 📁 Estructura del Proyecto
