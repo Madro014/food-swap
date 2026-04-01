@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import VistaDePlatos from '../../src/funcionalidades/platos/PlatosVista';
+import VistaDePlatos from '@Global/funcionalidades/platos/PlatosVista';
 
 export default function HomeScreen() {
   // Envolvemos en GestureHandlerRootView para que los gestos funcionen

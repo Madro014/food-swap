@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { View, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { useAuthStore } from '@/src/funcionalidades/auth/useAuthStore';
-import { styles } from '@/src/funcionalidades/negocio/wizard.styles';
+import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
+import { styles } from '@Global/funcionalidades/negocio/wizard.styles';
 
-import { IndicadorProgreso } from '@/src/funcionalidades/negocio/componentes/moleculas/IndicadorProgreso';
-import { PasoRestaurante } from '@/src/funcionalidades/negocio/componentes/organismos/PasoRestaurante';
-import { PasoPlato } from '@/src/funcionalidades/negocio/componentes/organismos/PasoPlato';
-import { PasoImagen } from '@/src/funcionalidades/negocio/componentes/organismos/PasoImagen';
-import { ControlesWizard } from '@/src/funcionalidades/negocio/componentes/organismos/ControlesWizard';
+import { IndicadorProgreso } from '@Global/funcionalidades/negocio/componentes/moleculas/IndicadorProgreso';
+import { PasoRestaurante } from '@Global/funcionalidades/negocio/componentes/organismos/PasoRestaurante';
+import { PasoPlato } from '@Global/funcionalidades/negocio/componentes/organismos/PasoPlato';
+import { PasoImagen } from '@Global/funcionalidades/negocio/componentes/organismos/PasoImagen';
+import { ControlesWizard } from '@Global/funcionalidades/negocio/componentes/organismos/ControlesWizard';
 
 export default function WizardNegocio() {
     const router = useRouter();
