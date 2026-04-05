@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { Platform, useWindowDimensions } from 'react-native';
 import { PlantillaAuthWeb } from '@Web/auth/PlantillaAuth.Web';
-import { PlantillaAuthApp } from '@APP/auth/PlantillaAuth.App';
+import { PlantillaAuthApp } from '@Movil/auth/PlantillaAuth.App';
 import { TransicionComidaRef } from '@Global/compartido/componentes/TransicionComida';
 
 interface PlantillaAuthProps {

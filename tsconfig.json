@@ -6,7 +6,7 @@
     "paths": {
       "@/*": ["./*"],
       "@Global/*": ["./src/Global/*"],
-      "@APP/*": ["./src/APP/*"],
+      "@Movil/*": ["./src/Movil/*"],
       "@Web/*": ["./src/Web/*"],
       "@backend/*": ["./backend/*"]
     }
