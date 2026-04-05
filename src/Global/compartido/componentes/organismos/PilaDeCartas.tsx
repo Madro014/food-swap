@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View, TouchableOpacity } from 'react-native';
 import { PlatoType } from '@Global/funcionalidades/matches/useMatchesStore';
 import TarjetaDeComida from '../TarjetaTinder';
 import { styles } from './PilaDeCartas.styles';
@@ -21,6 +21,18 @@ export function PilaDeCartas({ platos, cargando, onAceptar, onRechazar }: PilaDe
         );
     }
 
+    const handleRechazar = () => {
+        if (platos.length > 0) {
+            onRechazar(platos[platos.length - 1]);
+        }
+    };
+
+    const handleAceptar = () => {
+        if (platos.length > 0) {
+            onAceptar(platos[platos.length - 1]);
+        }
+    };
+
     return (
         <View style={styles.stack}>
             <View style={styles.cardsContainer}>
@@ -41,15 +53,15 @@ export function PilaDeCartas({ platos, cargando, onAceptar, onRechazar }: PilaDe
                 )}
             </View>
             <View style={styles.actionsContainer}>
-                <View style={styles.actionButton}>
+                <TouchableOpacity style={styles.actionButton} onPress={handleRechazar}>
                     <Text style={[styles.actionIcon, { color: '#F87171' }]}>❌</Text>
-                </View>
-                <View style={[styles.actionButton, { width: 60, height: 60, borderRadius: 30 }]}>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.actionButton, { width: 60, height: 60, borderRadius: 30 }]} onPress={handleAceptar}>
                     <Text style={[styles.actionIcon, { fontSize: 26, color: '#FFB800' }]}>⭐</Text>
-                </View>
-                <View style={styles.actionButton}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton} onPress={handleAceptar}>
                     <Text style={[styles.actionIcon, { color: '#4ADE80' }]}>💚</Text>
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     );

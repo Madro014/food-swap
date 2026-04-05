@@ -12,9 +12,16 @@ export const RegistroVista = () => {
     const transicionRef = useRef<TransicionComidaRef>(null);
     const textos = TEXTOS_AUTH.registro;
 
-    const handleRegistroSubmit = (nombreCompleto: string, rol: 'cliente' | 'negocio') => {
-        loginAction(nombreCompleto.trim(), rol);
-        const rutaDestino = rol === 'negocio' ? '/(wizard)' : '/(tabs)';
+    const handleRegistroSubmit = (data: {nombre: string, telefono: string, direccion: string, logo: string, email: string}, rol: 'cliente' | 'negocio') => {
+        loginAction({
+            name: data.nombre.trim(),
+            rol: rol,
+            avatar: data.logo,
+            email: data.email,
+            telefono: data.telefono,
+            direccion: data.direccion
+        });
+        const rutaDestino = rol === 'negocio' ? '/(negocio)' : '/(tabs)';
         if (transicionRef.current) {
             transicionRef.current.iniciar(() => router.replace(rutaDestino as any));
         } else {
