@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, useWindowDimensions } from 'react-native';
 import { TarjetaTinderWeb } from '@Web/platos/TarjetaTinder.Web';
-import { TarjetaTinderApp } from '@APP/platos/TarjetaTinder.App';
+import { TarjetaTinderApp } from '@Movil/platos/TarjetaTinder.App';
 import { PlatoType } from '@Global/funcionalidades/matches/useMatchesStore';
 
 interface TarjetaDeComidaProps {

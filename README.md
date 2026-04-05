@@ -1,352 +1,260 @@
-# Welcome to your Expo app 👋
+# Proyecto Nativas
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicacion hibrida construida con Expo, React Native, TypeScript y Expo Router.
+El proyecto comparte logica global en `src/Global` y separa implementaciones
+especificas para movil y web en `src/Movil` y `src/Web`.
 
-## Get started
+## Stack principal
 
-1. Install dependencies
+- Expo SDK 54
+- React 19
+- React Native 0.81
+- TypeScript
+- Expo Router
+- Zustand
 
-   ```bash
-   npm install
-   ```
+## Requisitos
 
-2. Start the app
+Antes de abrir el proyecto, instala lo siguiente:
 
-   ```bash
-   npx expo start
-   ```
+- Node.js 20 LTS recomendado
+- npm 10 o superior
+- Git
 
-In the output, you'll find options to open the app in a
+Herramientas opcionales segun la plataforma:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Android Studio si quieres emulador Android
+- Xcode si quieres simulador iOS
+- Expo Go si quieres probar desde un celular
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Compatibilidad por sistema operativo
 
-## Get a fresh project
+### Windows
 
-When you're ready, run:
+Puedes desarrollar para:
+
+- Web
+- Android
+- Expo Go
+
+No puedes ejecutar el simulador de iOS en Windows.
+
+### macOS
+
+Puedes desarrollar para:
+
+- Web
+- Android
+- iOS
+- Expo Go
+
+### Linux
+
+Puedes desarrollar para:
+
+- Web
+- Android
+- Expo Go
+
+No puedes ejecutar el simulador de iOS en Linux.
+
+## Como abrir el proyecto
+
+### 1. Clonar el repositorio
 
 ```bash
-npm run reset-project
+git clone <URL_DEL_REPOSITORIO>
+cd proyectonativas
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Instalar dependencias
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Iniciar el proyecto
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run start
+```
 
-## Join the community
+Tambien puedes usar:
 
-Join our community of developers creating universal apps.
+- `npm run android`
+- `npm run ios`
+- `npm run web`
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Comandos utiles
 
-# proyectoapp
-# 🍔 Food Hybrid App
+| Comando | Que hace |
+| --- | --- |
+| `npm install` | Instala dependencias |
+| `npm run start` | Abre el servidor de Expo |
+| `npm run android` | Inicia en Android |
+| `npm run ios` | Inicia en iOS |
+| `npm run web` | Inicia en navegador |
+| `npm run lint` | Ejecuta ESLint |
 
-Aplicación móvil híbrida construida con **React Native (Expo SDK 54)** y **TypeScript**.
+## Guia rapida por sistema operativo
 
-## Nota de estructura
+### Windows
 
-Todo lo alusivo al backend quedó centralizado en la carpeta raíz `backend/`.
+1. Instala Node.js LTS desde la web oficial.
+2. Instala Git.
+3. Instala Android Studio si vas a usar emulador.
+4. Abre el proyecto en VS Code.
+5. Ejecuta `npm install`.
+6. Ejecuta `npm run start`.
+
+Sugerencias:
+
+- Usa PowerShell o la terminal integrada de VS Code.
+- Si Android no aparece en Expo, abre primero el emulador desde Android Studio.
+
+### macOS
+
+1. Instala Node.js LTS.
+2. Instala Git.
+3. Instala Xcode si vas a usar iOS.
+4. Instala Android Studio si tambien usaras Android.
+5. Abre el proyecto en VS Code.
+6. Ejecuta `npm install`.
+7. Ejecuta `npm run start`.
+
+Sugerencias:
+
+- Para iOS, abre antes el simulador desde Xcode o desde Expo.
+- Si aparece un problema con permisos del simulador, reinicia Xcode y Expo.
+
+### Linux
+
+1. Instala Node.js LTS.
+2. Instala Git.
+3. Instala Android Studio si vas a usar emulador.
+4. Abre el proyecto en VS Code.
+5. Ejecuta `npm install`.
+6. Ejecuta `npm run start`.
+
+Sugerencias:
+
+- Revisa que `adb` este disponible si usas Android.
+- En algunas distros necesitas habilitar virtualizacion para el emulador.
+
+## Estructura real del proyecto
 
 ```text
+app/
+  (negocio)/           Rutas para flujo de negocio
+  (tabs)/              Rutas principales para usuario
+  (wizard)/            Flujo inicial de negocio
+  _layout.tsx          Layout raiz y control de navegacion
+  index.tsx            Redireccion inicial
+  login.tsx            Pantalla de login
+  registro.tsx         Pantalla de registro
+  modal.tsx            Pantalla modal
+
+src/
+  Global/              Logica y componentes compartidos
+  Movil/               Implementaciones especificas de mobile
+  Web/                 Implementaciones especificas de web
+
 backend/
-├── authService.ts
-├── contracts/
-│   └── api.ts
-├── geoService.ts
-├── platosService.ts
-├── README.md
-└── UbicacionServicio.ts
+  authService.ts       Contratos y helpers para autenticacion
+  platosService.ts     Contratos y helpers para platos
+  geoService.ts        Contratos y helpers de geolocalizacion
+  UbicacionServicio.ts Utilidades de ubicacion
+  contracts/           Tipos compartidos con backend
+  .env.example         Variables de ejemplo
 ```
 
-Para importar desde la app se usa el alias `@backend/*`.
+## Alias de importacion
 
----
+El proyecto usa alias definidos en `tsconfig.json`:
 
-## 📁 Estructura del Proyecto
+- `@/*`
+- `@Global/*`
+- `@Movil/*`
+- `@Web/*`
+- `@backend/*`
 
-```
-├── app/                    # 🔀 Routing (Expo Router)
-│   ├── _layout.tsx         # Root layout (providers globales)
-│   ├── index.tsx           # Redirect según autenticación
-│   ├── (auth)/             # Grupo de rutas: autenticación
-│   │   ├── _layout.tsx
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   └── (main)/             # Grupo de rutas: app principal
-│       ├── _layout.tsx
-│       ├── home.tsx
-│       └── profile.tsx
-│
-└── src/                    # 📦 Código fuente de la aplicación
-    ├── api/                # Configuración HTTP (adapter pattern)
-    ├── components/         # Componentes reutilizables (Button, Card, Input)
-    ├── constants/          # Tokens de diseño y configuración
-    ├── context/            # Estado global (React Context)
-    ├── hooks/              # Custom hooks (lógica de negocio)
-    ├── models/             # Interfaces TypeScript
-    ├── screens/            # Pantallas/vistas de la app
-    └── services/           # Funciones de llamadas al API
+Ejemplo:
+
+```ts
+import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
+import { HeaderAppApp } from '@Movil/layout/HeaderApp.App';
 ```
 
----
+## Backend
 
-## 🔀 `app/` — Routing (Expo Router)
+La carpeta `backend/` no es un backend ejecutable completo. Sirve como referencia
+de contratos y servicios que el frontend espera consumir.
 
-La carpeta `app/` define las **rutas de navegación** usando [Expo Router](https://docs.expo.dev/router/introduction/) (file-based routing). Cada archivo `.tsx` dentro de `app/` se convierte automáticamente en una ruta.
+Si necesitas revisar la forma esperada de respuestas, endpoints o payloads:
 
-| Archivo       | Función                                                                   |
-| ------------- | ------------------------------------------------------------------------- |
-| `_layout.tsx` | Layout raíz que envuelve toda la app con `AuthProvider` y `ThemeProvider` |
-| `index.tsx`   | Punto de entrada: redirige a login o home según estado de autenticación   |
-| `(auth)/`     | Grupo de rutas para el flujo de autenticación (sin headers)               |
-| `(main)/`     | Grupo de rutas para la app principal (con headers)                        |
+- Lee `backend/README.md`
+- Revisa `backend/.env.example`
 
-> **Los archivos de ruta son thin re-exports.** Solo montan un screen de `src/screens/`. La lógica y UI no van en `app/`.
+Variables de ejemplo:
 
----
-
-## 📦 `src/` — Código Fuente
-
-### `api/` — HTTP Client (Adapter Pattern)
-
-Desacopla la app de la librería HTTP concreta (Axios). Si mañana se cambia a `fetch` o a otra librería, solo se modifica la implementación del adapter.
-
-```
-api/
-├── http-client.ts     # Interfaz HttpClient (contrato)
-├── axios.config.ts    # Implementación con Axios + interceptors
-└── index.ts           # Barrel export
+```env
+API_URL=http://localhost:3000/api
+JWT_SECRET=change-me
+DATABASE_URL=postgresql://user:password@localhost:5432/proyectonativas
+UPLOAD_PROVIDER=local
 ```
 
-**Flujo:**
+## Solucion de problemas
 
-```
-Service → httpClient.get('/products') → Axios → Backend
-```
+### No resuelve imports como `@Movil/*`
 
----
+- Verifica que abriste la carpeta raiz del proyecto, no una subcarpeta.
+- Ejecuta `npm install`.
+- Reinicia VS Code.
+- Reinicia el servidor de TypeScript desde VS Code.
 
-### `components/` — Componentes Reutilizables
+### Expo no detecta Android
 
-Componentes de UI genéricos usados en múltiples pantallas. Cada componente sigue la estructura:
+- Abre el emulador manualmente desde Android Studio.
+- Verifica que `adb devices` liste un dispositivo.
 
-```
-components/
-├── Button/
-│   ├── Button.tsx     # Componente + estilos
-│   └── index.ts       # Re-export
-├── Card/
-├── Input/
-└── index.ts           # Barrel export global
-```
+### Expo no detecta iOS
 
-**Uso:**
+- Esto solo funciona en macOS.
+- Abre el simulador antes de correr `npm run ios`.
 
-```tsx
-import { Button, Card, Input } from '@/src/components';
+### Errores raros de cache
 
-<Button title="Enviar" onPress={handleSubmit} variant="primary" />
-<Button title="Cancelar" onPress={handleCancel} variant="secondary" />
-```
-
----
-
-### `constants/` — Tokens de Diseño y Configuración
-
-Valores centralizados que se reutilizan en toda la app. **Nunca hardcodear colores, tamaños o spacing directo en un componente.**
-
-```
-constants/
-├── colors.ts          # Paleta de colores (brand, semantic, neutral, text, border)
-├── typography.ts      # Estilos de texto (h1, h2, body, caption, etc.)
-├── spacing.ts         # Escala de spacing (múltiplos de 4px) + border radius
-├── config.ts          # Variables de configuración (API URL, app name)
-├── endpoints.ts       # Rutas del API centralizadas
-└── index.ts           # Barrel export
-```
-
-**Uso:**
-
-```tsx
-import { colors, typography, spacing, borderRadius } from "@/src/constants";
-
-const styles = StyleSheet.create({
-  container: {
-    padding: spacing.lg, // 16px
-    borderRadius: borderRadius.md, // 8px
-    backgroundColor: colors.surface,
-  },
-  title: {
-    ...typography.h2, // fontSize: 24, fontWeight: bold
-    color: colors.textPrimary,
-  },
-});
-```
-
----
-
-### `context/` — Estado Global (React Context)
-
-Proveedores de estado global para datos que necesitan múltiples pantallas.
-
-| Archivo            | Qué maneja                                                   |
-| ------------------ | ------------------------------------------------------------ |
-| `AuthContext.tsx`  | `isAuthenticated`, `login()`, `logout()`, `loading`, `error` |
-| `ThemeContext.tsx` | `isDarkMode`, `toggleTheme()`                                |
-
-**Los providers se montan en `app/_layout.tsx`.** Para consumir, usa el hook exportado:
-
-```tsx
-import { useAuth } from "@/src/context";
-
-const { isAuthenticated, login, logout } = useAuth();
-```
-
----
-
-### `hooks/` — Custom Hooks
-
-Encapsulan lógica de negocio reutilizable. Conectan los **services** con el **estado del componente**.
-
-| Hook            | Qué hace                                                        |
-| --------------- | --------------------------------------------------------------- |
-| `useProducts()` | Carga productos del API, maneja loading/error, expone `refetch` |
-
-**Patrón:**
-
-```tsx
-// El hook encapsula: llamar al service + manejar estado + error handling
-const { products, loading, error, refetch } = useProducts();
-```
-
----
-
-### `models/` — Interfaces TypeScript
-
-Definen la **forma de los datos** que maneja la app. Todas las interfaces se importan desde aquí.
-
-| Modelo    | Campos                                                     |
-| --------- | ---------------------------------------------------------- |
-| `User`    | `id`, `email`, `name`, `avatar?`                           |
-| `Product` | `id`, `name`, `description`, `price`, `image?`, `category` |
-
-```tsx
-import { User, Product } from "@/src/models";
-```
-
----
-
-### `screens/` — Pantallas
-
-Las vistas/páginas de la app, organizadas por feature. Cada screen:
-
-- Usa componentes de `components/`
-- Consume hooks de `hooks/` o `context/`
-- **No llama a services directamente** (eso lo hacen los hooks)
-
-```
-screens/
-├── auth/
-│   ├── LoginScreen.tsx
-│   ├── RegisterScreen.tsx
-│   └── index.ts
-├── home/
-│   ├── HomeScreen.tsx
-│   └── index.ts
-└── profile/
-    ├── ProfileScreen.tsx
-    └── index.ts
-```
-
----
-
-### `services/` — Llamadas al API
-
-Funciones puras que realizan peticiones HTTP. Usan el **adapter `httpClient`** y los **endpoints centralizados**.
-
-| Service              | Funciones                           |
-| -------------------- | ----------------------------------- |
-| `auth.service.ts`    | `login()`, `register()`             |
-| `product.service.ts` | `getProducts()`, `getProductById()` |
-
-```tsx
-// Todos los services siguen este patrón:
-export async function getProducts(): Promise<Product[]> {
-  try {
-    const response = await httpClient.get<Product[]>(endpoints.products.list);
-    return response.data;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Error");
-  }
-}
-```
-
----
-
-## 🔄 Flujo de Datos
-
-```
-Screen → Hook → Service → httpClient (adapter) → Axios → Backend
-                                                       ↓
-Screen ← Hook ← Service ← httpClient (adapter) ← Axios ← Response
-```
-
----
-
-## 🎨 Sistema de Estilos
-
-React Native **no usa CSS**. Los estilos se definen con `StyleSheet.create()` y se colocan al final de cada archivo de componente.
-
-Los **tokens de diseño** (colores, tipografía, spacing) se centralizan en `src/constants/` y se importan en los componentes:
-
-```tsx
-import { colors, typography, spacing } from "@/src/constants";
-```
-
-| Token         | Archivo         | Ejemplo                                  |
-| ------------- | --------------- | ---------------------------------------- |
-| Colores       | `colors.ts`     | `colors.primary`, `colors.textSecondary` |
-| Tipografía    | `typography.ts` | `typography.h1`, `typography.body`       |
-| Spacing       | `spacing.ts`    | `spacing.lg` (16px), `spacing.xl` (20px) |
-| Border Radius | `spacing.ts`    | `borderRadius.md` (8px)                  |
-
----
-
-## 🚀 Cómo Ejecutar
+Prueba:
 
 ```bash
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo
-npx expo start
-
-# Ejecutar en plataforma específica
-npx expo start --android
-npx expo start --ios
-npx expo start --web
+npx expo start --clear
 ```
 
----
+### ESLint o TypeScript siguen mostrando errores viejos
 
-## 🛠️ Stack Tecnologico
+- Cierra y vuelve a abrir VS Code.
+- Usa `Developer: Reload Window`.
+- Reinicia el servidor de ESLint.
 
-| Tecnología   | Versión |
-| ------------ | ------- |
-| React Native | 0.81.5  |
-| Expo SDK     | 54      |
-| TypeScript   | ~5.9.2  |
-| Expo Router  | ~6.0.23 |
-| Axios        | latest  |
-| React        | 19.1.0  |
+## Recomendaciones para VS Code
+
+Extensiones utiles:
+
+- ESLint
+- Prettier
+- Expo Tools
+
+Configuracion recomendada:
+
+- Abrir siempre la carpeta raiz `proyectonativas`
+- Usar la version de TypeScript del workspace
+
+## Estado actual
+
+Este proyecto ya usa la carpeta `src/Movil` en lugar de la antigua `src/APP`.
+Si aparece algun import viejo apuntando a `@APP/*`, debe cambiarse a `@Movil/*`.
+
+## Licencia
+
+Uso interno o academico, salvo que el equipo defina otra licencia.

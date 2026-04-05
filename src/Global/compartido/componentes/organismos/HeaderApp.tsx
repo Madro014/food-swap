@@ -1,7 +1,7 @@
+import { HeaderAppApp } from '@Movil/layout/HeaderApp.App';
+import { HeaderAppWeb } from '@Web/layout/HeaderApp.Web';
 import React from 'react';
 import { Platform } from 'react-native';
-import { HeaderAppWeb } from '@Web/layout/HeaderApp.Web';
-import { HeaderAppApp } from '@APP/layout/HeaderApp.App';
 
 interface HeaderAppProps {
     userName: string | null;
