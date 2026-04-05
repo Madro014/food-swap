@@ -42,11 +42,7 @@ export default function RootLayout() {
       } else if (userName && isInAuthGroup) {
         // Si se han logueado, redirigilos a su lugar de inicio según rol
         if (rol === 'negocio') {
-            if (platosNegocio && platosNegocio.length > 0) {
-                setTimeout(() => router.replace('/(negocio)' as any), 10);
-            } else {
-                setTimeout(() => router.replace('/(wizard)' as any), 10);
-            }
+            setTimeout(() => router.replace('/(negocio)' as any), 10);
         } else {
             setTimeout(() => router.replace('/(tabs)' as any), 10);
         }

@@ -1,25 +1,49 @@
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
 import { EnlaceNavegacion } from '../moleculas/EnlaceNavegacion';
 
 interface FormularioRegistroProps {
-    alHacerSubmit: (nombreCompleto: string, rol: 'cliente' | 'negocio') => void;
+    alHacerSubmit: (data: {nombre: string, telefono: string, direccion: string, logo: string, email: string}, rol: 'cliente' | 'negocio') => void;
     alNavegarLogin: () => void;
 }
 
 export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: FormularioRegistroProps) => {
-    const { nombre, setNombre, email, setEmail, password, setPassword, errores, limpiarError, validar } = useAuthForm(true);
+    const { 
+        nombre, setNombre, 
+        telefono, setTelefono,
+        direccion, setDireccion,
+        logo, setLogo,
+        email, setEmail, 
+        password, setPassword, 
+        errores, limpiarError, validar 
+    } = useAuthForm(true);
     const textos = TEXTOS_AUTH.registro;
     const textosRoles = TEXTOS_AUTH.roles;
     const [rolSeleccionado, setRolSeleccionado] = useState<'cliente' | 'negocio'>('cliente');
 
     const handleSubmit = () => {
-        if (validar()) {
-            alHacerSubmit(nombre, rolSeleccionado);
+        if (validar(rolSeleccionado)) {
+            alHacerSubmit({nombre, telefono, direccion, logo, email}, rolSeleccionado);
+        }
+    };
+
+    const seleccionarLogo = async () => {
+        // Pedir permiso localmente o abrir directo
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Equivalente a accept="image/*"
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            setLogo(result.assets[0].uri);
+            limpiarError('logo' as any); // Por si queremos limpiarlo luego
         }
     };
 
@@ -44,12 +68,54 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 </TouchableOpacity>
             </View>
             <InputConError
-                label={textos.labelNombre}
-                placeholder={textos.placeholderNombre}
+                label={rolSeleccionado === 'negocio' ? textos.labelNombreEmpresa : textos.labelNombre}
+                placeholder={rolSeleccionado === 'negocio' ? textos.placeholderNombreEmpresa : textos.placeholderNombre}
                 value={nombre}
                 onChangeText={(v) => { setNombre(v); limpiarError('nombre'); }}
                 error={errores.nombre}
             />
+            
+            {rolSeleccionado === 'negocio' && (
+                <>
+                    <InputConError
+                        label={textos.labelTelefono}
+                        placeholder={textos.placeholderTelefono}
+                        value={telefono}
+                        onChangeText={(v) => { setTelefono(v); limpiarError('telefono'); }}
+                        keyboardType="phone-pad"
+                        error={errores.telefono}
+                    />
+                    <InputConError
+                        label={textos.labelDireccion}
+                        placeholder={textos.placeholderDireccion}
+                        value={direccion}
+                        onChangeText={(v) => { setDireccion(v); limpiarError('direccion'); }}
+                        error={errores.direccion}
+                    />
+                    
+                    {/* Selector de Logo Nativo */}
+                    <Text style={styles.labelLogo}>{textos.labelLogo}</Text>
+                    
+                    {logo ? (
+                        <View style={styles.previewContainer}>
+                            <Image 
+                                source={{ uri: logo }} 
+                                style={styles.previewImage} 
+                                resizeMode="cover"
+                            />
+                            <TouchableOpacity style={styles.botonCambiarLogo} onPress={seleccionarLogo}>
+                                <Text style={styles.textoBotonCambiarLogo}>Cambiar Logo</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <TouchableOpacity style={styles.botonLogo} onPress={seleccionarLogo}>
+                            <Text style={styles.textoBotonLogo}>
+                                {textos.botonSubeLogo || "Seleccionar Logo"}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </>
+            )}
             <InputConError
                 label={textos.labelEmail}
                 placeholder={textos.placeholderEmail}
@@ -107,6 +173,58 @@ const styles = StyleSheet.create({
     },
     textoRolActivo: {
         color: '#322e2b',
+        fontWeight: 'bold',
+    },
+    labelLogo: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#322e2b',
+        marginBottom: 8,
+        marginTop: 4,
+    },
+    botonLogo: {
+        backgroundColor: '#f0e6e1',
+        padding: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#d2c9c4',
+        borderStyle: 'dashed',
+    },
+    textoBotonLogo: {
+        color: '#605a57',
+        fontWeight: '500',
+    },
+    textoRutaLogo: {
+        fontSize: 12,
+        color: '#7b726d',
+        marginBottom: 16,
+        fontStyle: 'italic',
+    },
+    previewContainer: {
+        alignItems: 'center',
+        marginBottom: 16,
+        gap: 8,
+    },
+    previewImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 2,
+        borderColor: '#f0e6e1',
+    },
+    botonCambiarLogo: {
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        backgroundColor: '#fef5f0',
+        borderWidth: 1,
+        borderColor: '#FFE5D9',
+    },
+    textoBotonCambiarLogo: {
+        fontSize: 12,
+        color: '#FF6B35',
         fontWeight: 'bold',
     }
 });
