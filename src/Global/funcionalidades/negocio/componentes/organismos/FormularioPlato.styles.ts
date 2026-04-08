@@ -1,0 +1,110 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+    contenedor: {
+        width: '100%',
+        padding: 24,
+        gap: 16,
+    },
+    titulo: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#322e2b',
+        textAlign: 'center',
+        marginBottom: 8,
+    },
+    subtitulo: {
+        fontSize: 16,
+        color: '#605a57',
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    labelImagen: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#322e2b',
+        marginBottom: 8,
+    },
+    botonImagen: {
+        width: '100%',
+        height: 200,
+        backgroundColor: '#fef5ec',
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: '#e2d5ce',
+        borderStyle: 'dashed',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+        marginBottom: 8,
+    },
+    imagenPreview: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    iconoCarga: {
+        width: 125,
+        height: 125,
+        marginBottom: 8,
+        resizeMode: 'contain',
+        transform: [{ translateY: 10 }],
+    },
+    placeholderImagenContenedor: {
+        alignItems: 'center',
+        gap: 8,
+    },
+    textoPlaceholder: {
+        color: '#8b7e74',
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    botonOverlay: {
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    textoBotonOverlay: {
+        color: '#FF6B35',
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    areaTexto: {
+        minHeight: 100,
+        backgroundColor: '#f8f4f1',
+        borderRadius: 12,
+        padding: 12,
+        color: '#322e2b',
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: '#e2d5ce',
+        textAlignVertical: 'top',
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#322e2b',
+        marginBottom: 4,
+    },
+    inputDescripcion: {
+        marginTop: 4,
+    },
+    botonSiguiente: {
+        marginTop: 8,
+    },
+    textoError: {
+        color: '#d63031',
+        fontSize: 12,
+        marginTop: -12,
+        marginLeft: 4,
+    }
+});

@@ -2,9 +2,9 @@ import { TarjetaMatch } from '@Global/compartido/componentes/moleculas/TarjetaMa
 import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, Text, View, useWindowDimensions } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { useAuthStore } from '../auth/useAuthStore';
-import { PlatoType, useMatchesStore } from './useMatchesStore';
+import { useMatchesStore } from './useMatchesStore';
 import { styles } from './ListaMatchesVista.styles';
 
 export default function ListaMatchesVista() {
@@ -13,10 +13,9 @@ export default function ListaMatchesVista() {
     const router = useRouter();
     const { width } = useWindowDimensions();
     
-    // Determine dynamic columns based on screen width
+    // Determine dynamic layout based on screen width
     const isDesktop = width > 1024;
     const isTablet = width > 768;
-    const columnas = isDesktop ? 3 : isTablet ? 2 : 1;
 
     const handleLogout = () => {
         logout();
@@ -43,19 +42,13 @@ export default function ListaMatchesVista() {
                 </View>
             ) : (
                 <View style={styles.listWrapper}>
-                    <FlatList
-                        key={columnas} // Force re-render when columns change
-                        data={matches}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }: { item: PlatoType }) => (
-                           <View style={{ flex: 1, margin: 10 }}>
-                               <TarjetaMatch plato={item} isWeb={isTablet} />
-                           </View>
-                        )}
-                        numColumns={columnas}
-                        contentContainerStyle={styles.listContent}
-                        showsVerticalScrollIndicator={false}
-                    />
+                    <View style={[styles.matchesContainer, isDesktop && styles.matchesContainerWeb]}>
+                        {matches.map((item) => (
+                            <View key={item.id} style={[styles.matchItem, isTablet && styles.matchItemWeb]}>
+                                <TarjetaMatch plato={item} isWeb={isTablet} />
+                            </View>
+                        ))}
+                    </View>
                 </View>
             )}
         </View>

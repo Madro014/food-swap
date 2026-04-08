@@ -1,1 +1,1 @@
-export type { ApiResponse, Usuario, UbicacionFija, Plato } from '@backend/contracts/api';
+export type { ApiResponse, Usuario, UbicacionFija, Plato } from '@api/contracts/api';

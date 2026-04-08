@@ -1,33 +1,28 @@
-import { Dimensions, StyleSheet } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
-
-const isDesktop = width > 768;
-const CARD_WIDTH = isDesktop ? 780 : width * 0.9;
-const CARD_HEIGHT = isDesktop ? 520 : height * 0.7;
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-    cardWrapper: {
-        position: 'absolute',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    card: {
-        width: CARD_WIDTH,
-        height: CARD_HEIGHT,
+    container: {
+        width: '100%',
+        height: '100%', // Usar el 100% del contenedor padre (cardsContainer)
+        borderRadius: 32,
         backgroundColor: '#FFFFFF',
-        borderRadius: isDesktop ? 48 : 32,
-        shadowColor: '#110c0a',
-        shadowOffset: { width: 0, height: isDesktop ? 25 : 10 },
-        shadowOpacity: isDesktop ? 0.12 : 0.05,
-        shadowRadius: isDesktop ? 40 : 15,
-        elevation: isDesktop ? 15 : 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.1,
+        shadowRadius: 20,
+        elevation: 10,
         overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: '#F3F0EE',
     },
     image: {
         width: '100%',
         height: '100%',
         position: 'absolute',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.3)',
     },
     gradient: {
         position: 'absolute',
@@ -36,82 +31,70 @@ export const styles = StyleSheet.create({
         right: 0,
         height: '50%',
         justifyContent: 'flex-end',
-        padding: 20,
-        paddingBottom: 30,
-        
+        padding: 24,
     },
     infoContainer: {
-        width: '100%',
-        zIndex: 10,
-    },
-    name: {
-        fontSize: isDesktop ? 38 : 28,
-        color: '#FFFFFF',
-        fontFamily: 'Inter_800ExtraBold',
-        textShadowColor: 'rgba(0, 0, 0, 0.4)',
-        textShadowOffset: { width: 0, height: 2 },
-        textShadowRadius: 15,
-        marginBottom: 8,
-        letterSpacing: -0.5,
-    },
-    detailsRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    restaurant: {
-        fontSize: 18,
-        color: '#F8F9FA',
-        fontWeight: '600',
-        fontFamily: 'Inter_600SemiBold',
-        marginRight: 10,
-        textShadowColor: 'rgba(0, 0, 0, 0.75)',
-        textShadowOffset: { width: -1, height: 1 },
-        textShadowRadius: 5,
-    },
-    distanceBadge: {
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        paddingHorizontal: 16,
-        paddingVertical: 6,
-        borderRadius: 100,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.3)',
-        // Web only blur
-        backdropFilter: 'blur(12px)',
-    },
-    distance: {
-        fontSize: 14,
-        color: '#FFFFFF',
-        fontWeight: '700',
-        fontFamily: 'Inter_700Bold',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        padding: 24,
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
     },
     badge: {
         position: 'absolute',
-        top: 50,
-        paddingHorizontal: 14,
+        top: 20,
+        left: 20,
+        backgroundColor: '#FF6B35',
+        paddingHorizontal: 12,
         paddingVertical: 6,
-        borderRadius: 8,
-        borderWidth: 4,
-        zIndex: 100,
-    },
-    likeBadge: {
-        left: 40,
-        borderColor: '#4ADE80',
-    },
-    nopeBadge: {
-        right: 40,
-        borderColor: '#F87171',
+        borderRadius: 12,
     },
     badgeText: {
-        fontSize: 32,
+        color: '#FFFFFF',
+        fontSize: 12,
         fontWeight: '900',
-        letterSpacing: 2,
         textTransform: 'uppercase',
     },
-    likeText: {
-        color: '#4ADE80',
+    priceTag: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 16,
     },
-    nopeText: {
-        color: '#F87171',
+    priceText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '800',
+    },
+    restaurant: {
+        fontSize: 12,
+        fontWeight: '700',
+        color: '#FFB800',
+        textTransform: 'uppercase',
+        letterSpacing: 2,
+        marginBottom: 8,
+    },
+    nombre: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#322E2B',
+        marginBottom: 10,
+    },
+    descripcion: {
+        fontSize: 15,
+        color: '#605A57',
+        lineHeight: 22,
+        fontWeight: '400',
+    },
+    cardWrapper: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });

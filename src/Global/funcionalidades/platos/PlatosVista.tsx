@@ -3,17 +3,17 @@ import { PilaDeCartas } from '@Global/compartido/componentes/organismos/PilaDeCa
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { useAuthStore } from '../auth/useAuthStore';
 import { PlatoType, useMatchesStore } from '../matches/useMatchesStore';
 import { usePlatos } from './usePlatos';
 import { styles } from './PlatosVista.styles';
-import { geoService } from '@backend/geoService';
+import { geoService } from '@api/geoService';
 
 export default function VistaDePlatos() {
     const { platos, cargando, quitar, sessionId } = usePlatos();
     const { userName, userAvatar, logout, token } = useAuthStore();
-    const agregarMatch = useMatchesStore(state => state.agregarMatch);
+    const { matches, agregarMatch } = useMatchesStore();
     const router = useRouter();
 
     const handleLogout = () => {
@@ -22,7 +22,19 @@ export default function VistaDePlatos() {
     };
 
     const manejarMeGusta = async (plato: PlatoType) => {
+        if (matches.length >= 3) return;
+
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        
+        // Si tiene 2 matches y va a por el tercero, avisar
+        if (matches.length === 2) {
+            Alert.alert(
+                "¡Último Match!",
+                "Has alcanzado el límite máximo permitido (3 matches). Para descubrir nuevos platos, tendrás que gestionar tus matches actuales.",
+                [{ text: "Entendido" }]
+            );
+        }
+
         agregarMatch(plato);
         quitar(plato.id);
         if (token && sessionId) {
@@ -38,14 +50,19 @@ export default function VistaDePlatos() {
         }
     };
 
+    // Si ya completó sus 3 matches, no mostrar más platos (estado vacío premium)
+    const hasLimit = matches.length >= 3;
+    const platosFiltrados = hasLimit ? [] : platos;
+
     return (
         <View style={styles.container}>
             <HeaderApp userName={userName} userAvatar={userAvatar} onLogout={handleLogout} />
             <PilaDeCartas
-                platos={platos}
+                platos={platosFiltrados}
                 cargando={cargando}
                 onAceptar={manejarMeGusta}
                 onRechazar={manejarNoMeGusta}
+                limiteAlcanzado={hasLimit}
             />
         </View>
     );

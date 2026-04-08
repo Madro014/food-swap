@@ -9,6 +9,8 @@ export interface PlatoType {
     lat: number;
     lon: number;
     distancia: number;
+    precio: number;
+    descripcion: string;
 }
 
 // asi será la memoria de nuestra tienda

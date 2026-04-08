@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { pedirPermisosUbicacion } from '@backend/UbicacionServicio';
+import { pedirPermisosUbicacion } from '@api/UbicacionServicio';
 import { PlatoType } from '../matches/useMatchesStore';
-import { geoService } from '@backend/geoService';
+import { geoService } from '@api/geoService';
+import { platosService } from '@api/platosService';
 import { useAuthStore } from '../auth/useAuthStore';
 
 export function usePlatos() {
@@ -24,41 +25,41 @@ export function usePlatos() {
                 const lon = ubi?.longitud ?? 0;
 
                 // 2. Gestionar sesión de swipe
-                let curSessionId: string;
                 const sesionRes = await geoService.obtenerSesionActiva(token);
+                let curSessionId: string | null = null;
                 
                 if (sesionRes.success && sesionRes.data) {
                     curSessionId = sesionRes.data.id;
                 } else {
-                    // Si no hay sesión, crear una nueva con 10km de radio
                     const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, 10);
-                    if (!nuevaSesion.success || !nuevaSesion.data) {
-                        throw new Error('No se pudo crear sesión de swipe');
+                    if (nuevaSesion.success && nuevaSesion.data) {
+                        curSessionId = nuevaSesion.data.id;
                     }
-                    curSessionId = nuevaSesion.data.id;
                 }
-                
                 setSessionId(curSessionId);
 
-                // 3. Traer feed
-                const feedRes = await geoService.obtenerPlatosCercanos(token, curSessionId, 1, 20);
-                if (feedRes.success && feedRes.data) {
-                    const lista: PlatoType[] = feedRes.data.data.dishes.map(d => ({
+                // 3. Traer los platos del endpoint "ALL" para asegurar visibilidad inmediata
+                const dishesRes = await platosService.listarPlatosActivos(token);
+                
+                if (dishesRes.success && dishesRes.data) {
+                    const lista: PlatoType[] = dishesRes.data.map(d => ({
                         id: d.id,
-                        nombre: d.name,
-                        restaurante: d.company.name,
-                        foto: d.photo_url || '',
-                        lat: ubi?.latitud ?? 0, 
-                        lon: ubi?.longitud ?? 0,
-                        distancia: d.company.distance_km,
-                    })).reverse(); 
+                        nombre: d.nombrePlato,
+                        restaurante: d.nombreRestaurante || 'Restaurante Local',
+                        foto: d.imagenUri || '',
+                        lat: lat, 
+                        lon: lon,
+                        distancia: 0,
+                        precio: d.precio || 0,
+                        descripcion: d.descripcion || '',
+                    }));
                     
                     setPlatos(lista);
                 } else {
                     setPlatos([]);
                 }
             } catch (error) {
-                console.log(error);
+                console.log("Error cargando platos:", error);
                 setPlatos([]);
             } finally {
                 setCargando(false);

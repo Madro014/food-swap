@@ -17,7 +17,6 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const userName = useAuthStore(state => state.userName);
   const rol = useAuthStore(state => state.rol);
-  const platosNegocio = useAuthStore(state => state.platosNegocio);
   const router = useRouter();
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
@@ -48,7 +47,7 @@ export default function RootLayout() {
         }
       }
     }
-  }, [letrasCargadas, rootNavigationState?.key, userName, rol, platosNegocio, segments, router]);
+  }, [letrasCargadas, rootNavigationState?.key, userName, rol, segments, router]);
 
   useEffect(() => {
     // Forzar ocultar la barra de estado del sistema (hora, bateria, etc) al arrancar
@@ -68,6 +67,8 @@ export default function RootLayout() {
         <Stack.Screen name="registro" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(negocio)" options={{ headerShown: false }} />
+        <Stack.Screen name="crear-plato" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar hidden={true} />

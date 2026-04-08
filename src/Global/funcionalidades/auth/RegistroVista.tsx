@@ -1,7 +1,7 @@
 import { TransicionComidaRef } from '@Global/compartido/componentes/TransicionComida';
 import { useRouter } from 'expo-router';
 import React, { useRef } from 'react';
-import { pedirPermisosUbicacion } from '@backend/UbicacionServicio';
+import { pedirPermisosUbicacion } from '@api/UbicacionServicio';
 import { FormularioRegistro } from './componentes/organismos/FormularioRegistro';
 import { PlantillaAuth } from './componentes/plantillas/PlantillaAuth';
 import { TEXTOS_AUTH } from './constantes/textos';

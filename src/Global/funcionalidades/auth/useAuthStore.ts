@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { authService } from '@backend/authService';
-import type { UbicacionFija } from '@backend/contracts/api';
+import { authService } from '@api/authService';
+import type { UbicacionFija } from '@api/contracts/api';
 
 // ---------------------------------------------------------------------------
 // Estado
