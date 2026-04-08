@@ -7,7 +7,7 @@ interface ListaPlatosNegocioProps {
     platosNegocio: { nombreRestaurante: string, nombrePlato: string, imagenUri: string | null }[];
 }
 
-export const ListaPlatosNegocio = ({ platosNegocio }: ListaPlatosNegocioProps) => {
+export const ListaPlatosNegocio = ({ platosNegocio = [] }: ListaPlatosNegocioProps) => {
     return (
         <View style={styles.contenedorContenido}>
             <View style={styles.cabeceraLista}>

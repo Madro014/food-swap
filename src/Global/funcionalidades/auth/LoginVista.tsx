@@ -8,16 +8,17 @@ import { useAuthStore } from './useAuthStore';
 
 export const LoginVista = () => {
     const router = useRouter();
-    const loginAction = useAuthStore(state => state.login);
+    const loginUsuario = useAuthStore(state => state.loginUsuario);
+    const loginNegocio = useAuthStore(state => state.loginNegocio);
     const transicionRef = useRef<TransicionComidaRef>(null);
     const textos = TEXTOS_AUTH.login;
 
-    const handleLoginSubmit = (email: string, rol: 'cliente' | 'negocio') => {
-        loginAction({
-            name: email.split('@')[0], 
-            rol: rol,
-            email: email
-        });
+    const handleLoginSubmit = async (email: string, password: string, rol: 'cliente' | 'negocio') => {
+        const loginFn = rol === 'negocio' ? loginNegocio : loginUsuario;
+        const ok = await loginFn(email, password);
+
+        if (!ok) return; // El store ya guarda el errorAuth para mostrarlo en el form
+
         const rutaDestino = rol === 'negocio' ? '/(negocio)' : '/(tabs)';
         if (transicionRef.current) {
             transicionRef.current.iniciar(() => router.replace(rutaDestino as any));

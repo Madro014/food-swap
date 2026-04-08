@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 // definimos cómo se ve un Plato para TypeScript
 export interface PlatoType {
-    id: number;
+    id: string;
     nombre: string;
     restaurante: string;
     foto: string;

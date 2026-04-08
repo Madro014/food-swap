@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView } from 'react-native';
+import { View, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { styles } from '@Global/funcionalidades/negocio/wizard.styles';
+import { platosService } from '@backend/platosService';
 
 import { IndicadorProgreso } from '@Global/funcionalidades/negocio/componentes/moleculas/IndicadorProgreso';
 import { PasoRestaurante } from '@Global/funcionalidades/negocio/componentes/organismos/PasoRestaurante';
@@ -13,12 +14,13 @@ import { ControlesWizard } from '@Global/funcionalidades/negocio/componentes/org
 
 export default function WizardNegocio() {
     const router = useRouter();
-    const agregarPlato = useAuthStore(state => state.agregarPlato);
+    const { token, userName } = useAuthStore();
 
     const [pasoActual, setPasoActual] = useState(1);
-    const [nombreRestaurante, setNombreRestaurante] = useState('');
+    const [nombreRestaurante, setNombreRestaurante] = useState(userName || '');
     const [nombrePlato, setNombrePlato] = useState('');
     const [imagenUri, setImagenUri] = useState<string | null>(null);
+    const [subiendo, setSubiendo] = useState(false);
 
     const seleccionarImagen = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,13 +38,23 @@ export default function WizardNegocio() {
     const irSiguiente = () => setPasoActual(prev => Math.min(prev + 1, 3));
     const irAtras = () => setPasoActual(prev => Math.max(prev - 1, 1));
 
-    const finalizarWizard = () => {
-        agregarPlato({ nombreRestaurante, nombrePlato, imagenUri });
-        router.replace('/(negocio)' as any);
+    const finalizarWizard = async () => {
+        if (!token) return;
+        setSubiendo(true);
+        // Enviamos 0 como precio por ahora ya que el wizard no lo pide
+        const desc = "Especialidad de " + nombreRestaurante;
+        const result = await platosService.crearPlato(token, nombrePlato, 0, imagenUri, desc);
+        setSubiendo(false);
+
+        if (result.success) {
+            router.replace('/(negocio)' as any);
+        } else {
+            console.error("Error al crear plato:", result.message);
+        }
     };
 
     const siguienteDeshabilitado = (pasoActual === 1 && !nombreRestaurante) || (pasoActual === 2 && !nombrePlato);
-    const finalizarDeshabilitado = !imagenUri;
+    const finalizarDeshabilitado = !imagenUri || subiendo;
 
     return (
         <SafeAreaView style={styles.contenedorPadre}>
@@ -66,10 +78,15 @@ export default function WizardNegocio() {
                     )}
 
                     {pasoActual === 3 && (
-                        <PasoImagen 
-                            imagenUri={imagenUri} 
-                            seleccionarImagen={seleccionarImagen} 
-                        />
+                        <View style={{ flex: 1 }}>
+                            <PasoImagen 
+                                imagenUri={imagenUri} 
+                                seleccionarImagen={seleccionarImagen} 
+                            />
+                            {subiendo && (
+                                <ActivityIndicator size="large" color="#FF4500" style={{marginTop: 20}} />
+                            )}
+                        </View>
                     )}
                 </View>
 

@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
+import { useAuthStore } from '../../useAuthStore';
 import { EnlaceNavegacion } from '../moleculas/EnlaceNavegacion';
 
 interface FormularioLoginProps {
-    alHacerSubmit: (email: string, rol: 'cliente' | 'negocio') => void;
+    alHacerSubmit: (email: string, password: string, rol: 'cliente' | 'negocio') => Promise<void>;
     alNavegarRegistro: () => void;
 }
 
@@ -17,9 +18,12 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
     const textosRoles = TEXTOS_AUTH.roles;
     const [rolSeleccionado, setRolSeleccionado] = useState<'cliente' | 'negocio'>('cliente');
 
-    const handleSubmit = () => {
+    const cargando = useAuthStore(state => state.cargando);
+    const errorAuth = useAuthStore(state => state.errorAuth);
+
+    const handleSubmit = async () => {
         if (validar()) {
-            alHacerSubmit(email, rolSeleccionado);
+            await alHacerSubmit(email, password, rolSeleccionado);
         }
     };
 
@@ -61,7 +65,10 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
                 secureTextEntry
                 error={errores.password}
             />
-            <Boton titulo={textos.botonSubmit} onPress={handleSubmit} />
+            {errorAuth && (
+                <Text style={styles.textoError}>{errorAuth}</Text>
+            )}
+            <Boton titulo={cargando ? 'Ingresando...' : textos.botonSubmit} onPress={handleSubmit} />
             <EnlaceNavegacion
                 textoNormal={textos.textoEnlaceNormal}
                 textoResaltado={textos.textoEnlaceBold}
@@ -101,5 +108,11 @@ const styles = StyleSheet.create({
     textoRolActivo: {
         color: '#322e2b',
         fontWeight: 'bold',
-    }
+    },
+    textoError: {
+        color: '#c0392b',
+        fontSize: 13,
+        marginBottom: 8,
+        textAlign: 'center',
+    },
 });

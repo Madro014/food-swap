@@ -1,96 +1,207 @@
-import { ApiResponse, Usuario, UbicacionFija } from './contracts/api';
+import { API_BASE_URL, getAuthHeaders, JSON_HEADERS } from './config';
+import type {
+    ApiResponse,
+    LoginData,
+    LoginEmpresaData,
+    RegistroUsuarioData,
+    RegistroEmpresaData,
+    Usuario,
+    UbicacionFija,
+} from './contracts/api';
 
-/**
- * SERVICIOS DE AUTENTICACION
- *
- * PARA EL COMPAÑERO DE BACKEND:
- * - Toda la UI del Frontend ahora depende de objetos de retorno estandarizados `ApiResponse`.
- * - Cada función aquí simula el retardo, pero la idea es que modifiques el interior para hacer:
- *   `const response = await fetch(API_URL, ...); return await response.json();`
- * - Asegurarse que el backend responda con éxito, los datos del usuario en "data" (y adjuntar el token),
- *   un mensaje opcional, o el listado de errores estructurados.
- */
+// ---------------------------------------------------------------------------
+// Helpers internos
+// ---------------------------------------------------------------------------
+
+/** Mapea la respuesta de login de usuario al tipo Usuario del frontend */
+function mapLoginToUsuario(data: LoginData): Usuario {
+    return {
+        id: data.user.id,
+        nombre: data.user.name,
+        email: data.user.email,
+        rol: data.actor_type === 'company' ? 'negocio' : 'cliente',
+        token: data.token,
+    };
+}
+
+/** Mapea la respuesta de login de empresa al tipo Usuario del frontend */
+function mapLoginEmpresaToUsuario(data: LoginEmpresaData): Usuario {
+    return {
+        id: data.company.id,
+        nombre: data.company.name,
+        email: data.company.email,
+        rol: data.actor_type === 'user' ? 'cliente' : 'negocio',
+        avatarUrl: data.company.logo_url,
+        token: data.token,
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Servicio de Autenticación
+// ---------------------------------------------------------------------------
 
 export const authService = {
-  
-  /**
-   * Registro estándar para un Cliente final.
-   * Creado a partir del caso de Jira: "Crear cuenta con nombre, email y contraseña"
-   */
-  registroUsuario: async (nombre: string, email: string, contrasena: string): Promise<ApiResponse<Usuario>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Realizar aquí tu petición real
-    // Ejemplo de Body a enviar: JSON.stringify({ nombre, email, password: contrasena })
-    // -----------------------------------------------------
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: "Usuario registrado correctamente",
-          data: { id: 'u1', nombre, email, rol: 'cliente', token: 'fake-jwt-token' }
-        });
-      }, 1000);
-    });
-  },
+    /**
+     * Registro de usuario cliente.
+     * POST /api/v1/auth/register
+     */
+    registroUsuario: async (
+        nombre: string,
+        email: string,
+        contrasena: string,
+        telefono?: string,
+    ): Promise<ApiResponse<RegistroUsuarioData>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify({
+                    name: nombre,
+                    email,
+                    password: contrasena,
+                    phone: telefono ?? '',
+                }),
+            });
+            const json = await res.json();
+            return {
+                success: json.success ?? false,
+                status: json.status,
+                message: json.message,
+                data: json.data,
+                errors: json.errors,
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 
-  /**
-   * Login universal (u orientado a Cliente)
-   * Jira: "Autenticar con email y contraseña"
-   */
-  loginUsuario: async (email: string, contrasena: string): Promise<ApiResponse<Usuario>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: POST a /api/auth/login o similar
-    // Si la contraseña no coincide devolver { success: false, message: "Credenciales inválidas" }
-    // -----------------------------------------------------
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: "Sesión iniciada con éxito",
-          // Extraemos nombre del email como mock
-          data: { id: 'u1', nombre: email.split('@')[0], email, rol: 'cliente', token: 'fake-jwt-token' }
-        });
-      }, 800);
-    });
-  },
+    /**
+     * Login de usuario cliente.
+     * POST /api/v1/auth/login
+     * Retorna un Usuario listo para guardar en el AuthStore.
+     */
+    loginUsuario: async (
+        email: string,
+        contrasena: string,
+    ): Promise<ApiResponse<Usuario>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify({ email, password: contrasena }),
+            });
+            const json = await res.json();
+            if (!json.success || !json.data) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            return {
+                success: true,
+                message: json.message,
+                data: mapLoginToUsuario(json.data as LoginData),
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 
-  /**
-   * Registro avanzado para Empresa (Negocio).
-   * Jira: "Empresa crea cuenta con datos y ubicación fija"
-   * 
-   * @param form Object con datos básicos corporativos
-   * @param ubicacion Sus coordenadas / dirección
-   */
-  registroNegocio: async (form: { nombreEmpresa: string; email: string; contrasena: string; }, ubicacion: UbicacionFija): Promise<ApiResponse<Usuario>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Recibir ambos objetos y guardar el local/negocio asociado a un User (o su propia tabla)
-    // -----------------------------------------------------
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: "Restaurante registrado exitosamente",
-          data: { id: 'n1', nombre: form.nombreEmpresa, email: form.email, rol: 'negocio', token: 'fake-jwt-token' }
-        });
-      }, 1200);
-    });
-  },
+    /**
+     * Registro de empresa / negocio.
+     * POST /api/v1/auth/company/register
+     *
+     * Nota: el backend requiere lat/lng. Si no se tienen al momento del registro,
+     * se envían como 0 y deben actualizarse más adelante en el perfil.
+     */
+    registroNegocio: async (
+        form: { nombreEmpresa: string; email: string; contrasena: string; telefono?: string },
+        ubicacion: UbicacionFija,
+    ): Promise<ApiResponse<RegistroEmpresaData>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/company/register`, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify({
+                    name: form.nombreEmpresa,
+                    email: form.email,
+                    password: form.contrasena,
+                    phone: form.telefono ?? '',
+                    address: ubicacion.direccionFisica ?? '',
+                    lat: ubicacion.latitud,
+                    lng: ubicacion.longitud,
+                }),
+            });
+            const json = await res.json();
+            return {
+                success: json.success ?? false,
+                status: json.status,
+                message: json.message,
+                data: json.data,
+                errors: json.errors,
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 
-  /**
-   * Login específico de Empresa.
-   * Jira: "Acceso al panel de gestión de platos"
-   */
-  loginNegocio: async (email: string, contrasena: string): Promise<ApiResponse<Usuario>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: POST de autenticación para roles de empresa
-    // -----------------------------------------------------
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({
-        success: true,
-        message: "Bienvenido al panel del restaurante",
-        data: { id: 'n1', nombre: 'Restaurante Mock', email, rol: 'negocio', token: 'fake-jwt-token' }
-      }), 800);
-    });
-  }
+    /**
+     * Login de empresa / negocio.
+     * POST /api/v1/auth/company/login
+     * Retorna un Usuario listo para guardar en el AuthStore.
+     */
+    loginNegocio: async (
+        email: string,
+        contrasena: string,
+    ): Promise<ApiResponse<Usuario>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/company/login`, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify({ email, password: contrasena }),
+            });
+            const json = await res.json();
+            if (!json.success || !json.data) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            return {
+                success: true,
+                message: json.message,
+                data: mapLoginEmpresaToUsuario(json.data as LoginEmpresaData),
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 
+    /**
+     * Perfil del usuario autenticado.
+     * GET /api/v1/user/profile
+     */
+    perfilUsuario: async (token: string): Promise<ApiResponse<unknown>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/user/profile`, {
+                method: 'GET',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            return { success: json.success, message: json.message, data: json.data, errors: json.errors };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Perfil de empresa autenticada.
+     * GET /api/v1/company/profile
+     */
+    perfilEmpresa: async (token: string): Promise<ApiResponse<unknown>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/company/profile`, {
+                method: 'GET',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            return { success: json.success, message: json.message, data: json.data, errors: json.errors };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 };

@@ -5,10 +5,14 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
+import { useAuthStore } from '../../useAuthStore';
 import { EnlaceNavegacion } from '../moleculas/EnlaceNavegacion';
 
 interface FormularioRegistroProps {
-    alHacerSubmit: (data: {nombre: string, telefono: string, direccion: string, logo: string, email: string}, rol: 'cliente' | 'negocio') => void;
+    alHacerSubmit: (
+        data: { nombre: string; telefono: string; direccion: string; logo: string; email: string; password: string },
+        rol: 'cliente' | 'negocio',
+    ) => Promise<void>;
     alNavegarLogin: () => void;
 }
 
@@ -26,9 +30,12 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
     const textosRoles = TEXTOS_AUTH.roles;
     const [rolSeleccionado, setRolSeleccionado] = useState<'cliente' | 'negocio'>('cliente');
 
-    const handleSubmit = () => {
+    const cargando = useAuthStore(state => state.cargando);
+    const errorAuth = useAuthStore(state => state.errorAuth);
+
+    const handleSubmit = async () => {
         if (validar(rolSeleccionado)) {
-            alHacerSubmit({nombre, telefono, direccion, logo, email}, rolSeleccionado);
+            await alHacerSubmit({ nombre, telefono, direccion, logo, email, password }, rolSeleccionado);
         }
     };
 
@@ -134,7 +141,10 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 secureTextEntry
                 error={errores.password}
             />
-            <Boton titulo={textos.botonSubmit} onPress={handleSubmit} />
+            {errorAuth && (
+                <Text style={styles.textoError}>{errorAuth}</Text>
+            )}
+            <Boton titulo={cargando ? 'Registrando...' : textos.botonSubmit} onPress={handleSubmit} />
             <EnlaceNavegacion
                 textoNormal={textos.textoEnlaceNormal}
                 textoResaltado={textos.textoEnlaceBold}
@@ -226,5 +236,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#FF6B35',
         fontWeight: 'bold',
-    }
+    },
+    textoError: {
+        color: '#c0392b',
+        fontSize: 13,
+        marginBottom: 8,
+        textAlign: 'center',
+    },
 });

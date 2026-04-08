@@ -8,10 +8,11 @@ import { useAuthStore } from '../auth/useAuthStore';
 import { PlatoType, useMatchesStore } from '../matches/useMatchesStore';
 import { usePlatos } from './usePlatos';
 import { styles } from './PlatosVista.styles';
+import { geoService } from '@backend/geoService';
 
 export default function VistaDePlatos() {
-    const { platos, cargando, quitar } = usePlatos();
-    const { userName, userAvatar, logout } = useAuthStore();
+    const { platos, cargando, quitar, sessionId } = usePlatos();
+    const { userName, userAvatar, logout, token } = useAuthStore();
     const agregarMatch = useMatchesStore(state => state.agregarMatch);
     const router = useRouter();
 
@@ -24,11 +25,17 @@ export default function VistaDePlatos() {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         agregarMatch(plato);
         quitar(plato.id);
+        if (token && sessionId) {
+            await geoService.registrarSwipe(token, sessionId, plato.id, 'right');
+        }
     };
 
     const manejarNoMeGusta = async (plato: PlatoType) => {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
         quitar(plato.id);
+        if (token && sessionId) {
+            await geoService.registrarSwipe(token, sessionId, plato.id, 'left');
+        }
     };
 
     return (

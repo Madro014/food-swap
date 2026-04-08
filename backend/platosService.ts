@@ -1,91 +1,242 @@
-import { ApiResponse, Plato } from './contracts/api';
+import { Platform } from 'react-native';
+import { API_BASE_URL, getAuthHeaders } from './config';
+import type { ApiResponse, Plato, PlatoBackend, PresignedURLData, CloudinaryResponse } from './contracts/api';
+import { mapPlatoBackendToPlato as mapPlato } from './contracts/api';
 
-/**
- * SERVICIOS DE PLATOS (MENÚ Y GESTIÓN)
- *
- * PARA EL COMPAÑERO DE BACKEND:
- * - Los platos incluyen imágenes, por lo tanto en `crearPlato` y `editarPlato`, tendrás que
- *   probablemente implementar o recibir peticiones `multipart/form-data` para adjuntar el archivo blob/File
- *   en vez de un json básico.
- */
+// ---------------------------------------------------------------------------
+// Servicio de Platos
+// ---------------------------------------------------------------------------
 
 export const platosService = {
+    /**
+     * Crea un nuevo plato para la empresa autenticada.
+     *
+     * Flujo en dos pasos:
+     * 1. Sube la imagen a Cloudinary vía POST /api/v1/upload (multipart/form-data)
+     * 2. Crea el plato con la URL pública vía POST /api/v1/dishes (JSON + Bearer token)
+     *
+     * POST /api/v1/upload
+     * POST /api/v1/dishes
+     */
+    crearPlato: async (
+        token: string,
+        nombrePlato: string,
+        precio: number,
+        imagenUri: string | null,
+        descripcion?: string,
+    ): Promise<ApiResponse<Plato>> => {
+        try {
+            let photoUrl = '';
 
-  /**
-   * Crear un nuevo plato en servidor.
-   * Jira: "Empresa registra plato con foto, nombre y precio"
-   * 
-   * @param imagenUri Es importante transformarlo o inyectarlo como File a tu `FormData`.
-   */
-  crearPlato: async (empresaId: string, nombreRestaurante: string, nombrePlato: string, precio: number, imagenUri: string | null): Promise<ApiResponse<Plato>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Si estamos en RN, el frontend construirá un objeto formData 
-    // formData.append('foto', { uri: imagenUri, name: 'foto.jpg', type: 'image/jpeg' })
-    // formData.append('nombre', nombrePlato)... etc.
-    // Recibe esto en el servidor, guárdalo (ej. AWS S3 o carpeta estática) y devuelve la URL remota.
-    // -----------------------------------------------------
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const nuevoPlato: Plato = {
-          id: Math.random().toString(36).substring(7),
-          empresaId,
-          nombreRestaurante,
-          nombrePlato,
-          precio,
-          imagenUri: imagenUri || 'https://via.placeholder.com/300',
-          activo: true,
-          createdAt: new Date().toISOString()
-        };
-        resolve({
-          success: true,
-          message: "Plato subido y registrado con éxito",
-          data: nuevoPlato
-        });
-      }, 1000);
-    });
-  },
+            // Paso 1: subir imagen si existe mediante Presigned URL
+            if (imagenUri) {
+                // 1.1 Obtener la URL y los parámetros de Cloudinary firmados por nuestro backend Go
+                const signatureRes = await fetch(`${API_BASE_URL}/upload/presigned-url`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(token),
+                    body: JSON.stringify({
+                        file_name: 'foto.jpg',
+                        file_type: 'image/jpeg',
+                        folder: 'dishes',
+                    })
+                });
+                const signatureJson = await signatureRes.json();
+                
+                if (!signatureJson.success || !signatureJson.data) {
+                    return { success: false, message: 'No se pudo generar la firma para subir imagen', errors: signatureJson.errors };
+                }
 
-  /**
-   * Listar todos los platos asociados al perfil de empresa activo.
-   * Jira: "Listar platos de empresa" (Ver todos los platos registrados).
-   */
-  listarPlatosNegocio: async (empresaId: string): Promise<ApiResponse<Plato[]>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Realizar GET a /api/platos?empresaId=X
-    // -----------------------------------------------------
-    return new Promise((resolve) => resolve({
-        success: true,
-        data: [] // Devuelve mock vacío o rellénalo si quieres probar en memoria
-    }));
-  },
+                const cloudinaryData = signatureJson.data as PresignedURLData;
+                
+                // 1.2 Construir FormData inyectando todos los "fields" devueltos por el backend y finalmente la imagen.
+                const formData = new FormData();
+                Object.entries(cloudinaryData.fields).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        formData.append(key, value);
+                    }
+                });
 
-  /**
-   * Actualizar un plato.
-   * Jira: "Editar plato" (Actualizar datos de un plato existente)
-   */
-  editarPlato: async (platoId: string, payloadPatch: Partial<Plato>): Promise<ApiResponse<Plato>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Endpoint PATCH o PUT con datos actualizados.
-    // -----------------------------------------------------
-    return new Promise(resolve => resolve({
-        success: true,
-        message: "Plato actualizado"
-    }));
-  },
+                let fileToUpload: any;
+                if (Platform.OS === 'web') {
+                    // En la web, fetch extrae correctamente el Blob desde la URI de Expo (base64/blob)
+                    const res = await fetch(imagenUri);
+                    const blob = await res.blob();
+                    // Append blob natively in web
+                    formData.append('file', blob, 'foto.jpg');
+                } else {
+                    // En React Native (iOS/Android), los archivos se adjuntan así:
+                    fileToUpload = {
+                        uri: imagenUri,
+                        name: 'foto.jpg',
+                        type: 'image/jpeg',
+                    };
+                    formData.append('file', fileToUpload as unknown as Blob);
+                }
 
-  /**
-   * Ocultar o Activar plato sin eliminarlo del historial.
-   * Jira: "Activar / desactivar plato" (Control de disponibilidad sin borrar historial)
-   */
-  cambiarEstadoPlato: async (platoId: string, activo: boolean): Promise<ApiResponse<boolean>> => {
-    // -----------------------------------------------------
-    // TODO BACKEND: Endpoint PATCH enfocado solo al booleano. Status 200 y confirmación true/false
-    // -----------------------------------------------------
-    return new Promise(resolve => resolve({
-        success: true,
-        message: activo ? "Plato marcado como Disponible" : "Plato Ocultado al público",
-        data: activo
-    }));
-  }
+                // 1.3 Hacer subida directa pesada hacia Cloudinary
+                const directUploadRes = await fetch(cloudinaryData.url, {
+                    method: 'POST',
+                    // No pasamos Auth porque no es nuestro backend, sino la API pública directa
+                    body: formData,
+                });
+                
+                if (!directUploadRes.ok) {
+                    return { success: false, message: 'Error directo en Cloudinary al subir imagen' };
+                }
+                
+                const uploadJson = (await directUploadRes.json()) as CloudinaryResponse;
+                photoUrl = uploadJson.secure_url;
+            }
 
+            // Paso 2: crear el plato con la URL pública
+            const res = await fetch(`${API_BASE_URL}/dishes`, {
+                method: 'POST',
+                headers: getAuthHeaders(token),
+                body: JSON.stringify({
+                    name: nombrePlato,
+                    description: descripcion ?? '',
+                    price: precio,
+                    photo_url: photoUrl,
+                }),
+            });
+            const json = await res.json();
+            if (!json.success || !json.data) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            return {
+                success: true,
+                message: json.message,
+                data: mapPlato(json.data as PlatoBackend),
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Lista todos los platos de la empresa autenticada (activos e inactivos).
+     * El backend infiere el empresaId desde el JWT, no hace falta pasarlo.
+     *
+     * GET /api/v1/dishes
+     */
+    listarPlatosNegocio: async (token: string): Promise<ApiResponse<Plato[]>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/dishes`, {
+                method: 'GET',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            if (!json.success) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            const platos: Plato[] = (json.data?.dishes ?? []).map((p: PlatoBackend) => mapPlato(p));
+            return { success: true, message: json.message, data: platos };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Lista solo los platos activos de la empresa autenticada.
+     *
+     * GET /api/v1/dishes/active
+     */
+    listarPlatosActivos: async (token: string): Promise<ApiResponse<Plato[]>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/dishes/active`, {
+                method: 'GET',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            if (!json.success) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            const platos: Plato[] = (json.data?.dishes ?? []).map((p: PlatoBackend) => mapPlato(p));
+            return { success: true, message: json.message, data: platos };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Actualiza los datos de un plato existente.
+     * Envía solo los campos que cambiaron (partial update).
+     *
+     * PUT /api/v1/dishes/:platoId
+     */
+    editarPlato: async (
+        token: string,
+        platoId: string,
+        payload: { nombre?: string; descripcion?: string; precio?: number; imagenUri?: string },
+    ): Promise<ApiResponse<Plato>> => {
+        try {
+            const body: Record<string, unknown> = {};
+            if (payload.nombre !== undefined) body.name = payload.nombre;
+            if (payload.descripcion !== undefined) body.description = payload.descripcion;
+            if (payload.precio !== undefined) body.price = payload.precio;
+            if (payload.imagenUri !== undefined) body.photo_url = payload.imagenUri;
+
+            const res = await fetch(`${API_BASE_URL}/dishes/${platoId}`, {
+                method: 'PUT',
+                headers: getAuthHeaders(token),
+                body: JSON.stringify(body),
+            });
+            const json = await res.json();
+            if (!json.success || !json.data) {
+                return { success: false, status: json.status, message: json.message, errors: json.errors };
+            }
+            return {
+                success: true,
+                message: json.message,
+                data: mapPlato(json.data as PlatoBackend),
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Activa o desactiva un plato sin eliminarlo del historial.
+     *
+     * PATCH /api/v1/dishes/:platoId/toggle
+     */
+    cambiarEstadoPlato: async (
+        token: string,
+        platoId: string,
+    ): Promise<ApiResponse<{ id: string; is_active: boolean; status: string }>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/dishes/${platoId}/toggle`, {
+                method: 'PATCH',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            return {
+                success: json.success ?? false,
+                status: json.status,
+                message: json.message,
+                data: json.data,
+                errors: json.errors,
+            };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Elimina permanentemente un plato.
+     *
+     * DELETE /api/v1/dishes/:platoId
+     */
+    eliminarPlato: async (token: string, platoId: string): Promise<ApiResponse<void>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/dishes/${platoId}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders(token),
+            });
+            const json = await res.json();
+            return { success: json.success ?? false, message: json.message, errors: json.errors };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
 };
