@@ -98,13 +98,25 @@ export const styles = StyleSheet.create({
     inputDescripcion: {
         marginTop: 4,
     },
-    botonSiguiente: {
-        marginTop: 8,
-    },
     textoError: {
         color: '#d63031',
         fontSize: 12,
         marginTop: -12,
         marginLeft: 4,
+    },
+    // Nuevos estilos para los botones
+    botonesContenedor: {
+        marginTop: 8,
+        gap: 12, // Espacio entre el botón de subir y el de cancelar
+    },
+    botonCancelar: {
+        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    textoCancelar: {
+        color: '#8b7e74', // Mismo color de fuente que usaste para el placeholder
+        fontSize: 16,
+        fontWeight: '600',
     }
 });

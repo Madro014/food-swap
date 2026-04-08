@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
+import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from 'react';
+import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './FormularioPlato.styles';
 
 interface FormularioPlatoProps {
@@ -14,16 +14,17 @@ interface FormularioPlatoProps {
         imagenUri: string;
         descripcion: string;
     }) => Promise<void>;
+    alCancelar: () => void; // <-- Nueva prop para manejar la salida
     cargando?: boolean;
 }
 
-export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, cargando = false }: FormularioPlatoProps) => {
+export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, alCancelar, cargando = false }: FormularioPlatoProps) => {
     const [nombreRestaurante, setNombreRestaurante] = useState(nombreRestauranteInicial);
     const [nombrePlato, setNombrePlato] = useState('');
     const [precio, setPrecio] = useState('');
     const [imagenUri, setImagenUri] = useState<string | null>(null);
     const [descripcion, setDescripcion] = useState('');
-    
+
     // Estado de errores
     const [errores, setErrores] = useState({
         nombreRestaurante: '',
@@ -50,7 +51,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
     const validar = () => {
         const nuevosErrores = {
             nombreRestaurante: !nombreRestaurante ? 'El nombre del restaurante es obligatorio' : '',
-            nombrePlato: !nombrePlato ? 'el nombre del plato es obligatorio' : '',
+            nombrePlato: !nombrePlato ? 'El nombre del plato es obligatorio' : '',
             precio: !precio || isNaN(Number(precio)) ? 'Ingresa un precio válido' : '',
             imagenUri: !imagenUri ? 'La imagen del plato es obligatoria' : '',
             descripcion: !descripcion ? 'Agrega una descripción para tentar a tus clientes' : ''
@@ -104,8 +105,8 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
 
             <View>
                 <Text style={styles.labelImagen}>Imagen del Plato (Obligatoria)</Text>
-                <TouchableOpacity 
-                    style={[styles.botonImagen, errores.imagenUri ? { borderColor: '#d63031' } : {}]} 
+                <TouchableOpacity
+                    style={[styles.botonImagen, errores.imagenUri ? { borderColor: '#d63031' } : {}]}
                     onPress={seleccionarImagen}
                     activeOpacity={0.7}
                 >
@@ -118,9 +119,9 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                         </>
                     ) : (
                         <View style={styles.placeholderImagenContenedor}>
-                            <Image 
-                                source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1775621191/Ícono_de_carga_temático_de_comida_hjuvap.png' }} 
-                                style={styles.iconoCarga} 
+                            <Image
+                                source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1775621191/Ícono_de_carga_temático_de_comida_hjuvap.png' }}
+                                style={styles.iconoCarga}
                             />
                             <Text style={styles.textoPlaceholder}>Seleccionar Foto del Plato</Text>
                         </View>
@@ -143,14 +144,24 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                 {errores.descripcion ? <Text style={[styles.textoError, { marginTop: 4 }]}>{errores.descripcion}</Text> : null}
             </View>
 
-            <View style={styles.botonSiguiente}>
-                <Boton 
-                    titulo={cargando ? 'Guardando Creación...' : 'Subir Plato'} 
-                    onPress={() => { handleSubmit(); }} 
+            {/* Contenedor actualizado para los botones */}
+            <View style={styles.botonesContenedor}>
+                <Boton
+                    titulo={cargando ? 'Guardando Creación...' : 'Subir Plato'}
+                    onPress={() => { handleSubmit(); }}
                     disabled={cargando}
                 />
+                
+                {/* Nuevo botón de salida */}
+                <TouchableOpacity 
+                    style={styles.botonCancelar} 
+                    onPress={alCancelar}
+                    disabled={cargando}
+                >
+                    <Text style={styles.textoCancelar}>Cancelar y volver</Text>
+                </TouchableOpacity>
             </View>
-            
+
             {cargando && <ActivityIndicator size="small" color="#FF6B35" style={{ marginTop: 12 }} />}
         </View>
     );
