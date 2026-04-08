@@ -21,6 +21,9 @@ const MAPPING = {
   'flame.fill': 'whatshot',
   'heart.fill': 'favorite',
   'rectangle.portrait.and.arrow.right': 'logout',
+  'xmark': 'close',
+  'info.circle': 'info',
+  'plus': 'add',
 } as IconMapping;
 
 /**

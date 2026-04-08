@@ -8,6 +8,7 @@ interface TarjetaDeComidaProps {
     plato: PlatoType;
     alAceptar: (plato: PlatoType) => void;
     alRechazar: (plato: PlatoType) => void;
+    deshabilitada?: boolean;
 }
 
 export default function TarjetaDeComida(props: TarjetaDeComidaProps) {

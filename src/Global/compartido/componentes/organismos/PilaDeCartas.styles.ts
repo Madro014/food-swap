@@ -1,78 +1,125 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
-const { width } = Dimensions.get('window');
-const isDesktop = width > 768;
+const isWeb = Platform.OS === 'web';
 
 export const styles = StyleSheet.create({
     stack: {
         flex: 1,
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        backgroundColor: '#F7F4F2', // Un crema elegante y premium
+        justifyContent: 'center',
+    },
+    cardsContainer: {
         width: '100%',
-        backgroundColor: '#fef5f0',
-        paddingBottom: isDesktop ? 120 : 24,
+        height: isWeb ? 580 : 520, // Un poco más alto para lucir la info
+        maxWidth: 480, // Un poco más ancho para web
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        marginBottom: 40,
     },
     loadingContainer: {
         flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F3F4F6',
+        alignItems: 'center',
+        backgroundColor: '#F7F4F2',
     },
     loadingText: {
-        marginTop: 20,
+        marginTop: 16,
         fontSize: 18,
-        color: '#FF6B6B',
-        fontFamily: 'Inter_600SemiBold',
+        color: '#8B7E74',
         fontWeight: '600',
-    },
-    cardsContainer: {
-        flex: 1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: isDesktop ? 24 : 12,
+        letterSpacing: -0.2,
     },
     emptyContainer: {
-        alignItems: 'center',
+        flex: 1,
         justifyContent: 'center',
-        padding: 40,
+        alignItems: 'center',
+        paddingHorizontal: 40,
+        backgroundColor: '#F7F4F2',
+    },
+    emptyIcon: {
+        fontSize: 120,
+        marginBottom: 24,
     },
     emptyText: {
-        fontSize: 24,
-        color: '#495057',
-        fontWeight: '700',
-        marginBottom: 10,
-    },
-    emptySubText: {
-        fontSize: 16,
-        color: '#868E96',
+        fontSize: 28,
+        fontWeight: '900',
+        color: '#322E2B',
         textAlign: 'center',
+        letterSpacing: -1,
+    },
+    emptySub: {
+        fontSize: 18,
+        color: '#8B7E74',
+        textAlign: 'center',
+        marginTop: 16,
+        lineHeight: 28,
+        fontWeight: '500',
     },
     actionsContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
-        gap: isDesktop ? 60 : 30,
+        justifyContent: 'center',
+        gap: 48,
+        paddingVertical: 20,
+        paddingBottom: isWeb ? 120 : 100, // space for the floating dock
         width: '100%',
-        marginTop: isDesktop ? 12 : 8,
-        marginBottom: isDesktop ? 8 : 0,
-        paddingBottom: isDesktop ? 0 : 12,
-        zIndex: 20,
+        zIndex: 10,
+    },
+    actionButtonWrapper: {
+        alignItems: 'center',
+        gap: 8,
+    },
+    actionButtonLabel: {
+        fontSize: 11,
+        fontWeight: '600',
+        letterSpacing: 0.5,
+        textTransform: 'uppercase' as const,
+    },
+    actionButtonLabelX: {
+        color: '#EF4444',
+    },
+    actionButtonLabelHeart: {
+        color: '#10B981',
     },
     actionButton: {
-        width: isDesktop ? 72 : 64,
-        height: isDesktop ? 72 : 64,
-        borderRadius: isDesktop ? 36 : 32,
+        width: 68,
+        height: 68,
+        borderRadius: 34,
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#110c0a',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.1,
+        shadowRadius: 16,
+        elevation: 8,
+        borderWidth: 1.5,
+        borderColor: '#F3F0EE',
+        cursor: isWeb ? 'pointer' : 'auto',
+    } as any,
+    actionButtonLarge: {
+        width: 68,
+        height: 68,
+        borderRadius: 34,
+        shadowColor: '#10B981',
+        shadowOpacity: 0.25,
+        shadowRadius: 20,
         shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: isDesktop ? 0.08 : 0.04,
-        shadowRadius: 15,
-        elevation: 5,
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.03)',
+        elevation: 10,
+        borderWidth: 0,
     },
-    actionIcon: {
-        fontSize: 28,
+    buttonX: {
+        backgroundColor: '#FFFFFF',
+        borderColor: '#FECACA',
+        shadowColor: '#EF4444',
+        shadowOpacity: 0.15,
+        shadowRadius: 16,
+    },
+    buttonHeart: {
+        backgroundColor: '#FFFFFF',
+        borderColor: '#A7F3D0',
     },
 });

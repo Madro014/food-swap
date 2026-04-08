@@ -1,14 +1,17 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from '../../dashboard.styles';
+import { IconSymbol } from '@Global/components/ui/icon-symbol';
 
 interface TarjetaPlatoNegocioProps {
+    id: string;
     nombreRestaurante: string;
     nombrePlato: string;
     imagenUri: string | null;
+    onEliminar?: (id: string) => void;
 }
 
-export const TarjetaPlatoNegocio = ({ nombreRestaurante, nombrePlato, imagenUri }: TarjetaPlatoNegocioProps) => {
+export const TarjetaPlatoNegocio = ({ id, nombreRestaurante, nombrePlato, imagenUri, onEliminar }: TarjetaPlatoNegocioProps) => {
     return (
         <View style={styles.tarjetaPlato}>
             <Image 
@@ -19,6 +22,16 @@ export const TarjetaPlatoNegocio = ({ nombreRestaurante, nombrePlato, imagenUri 
                 <Text style={styles.tituloPlato}>{nombrePlato}</Text>
                 <Text style={styles.textoRestaurante}>{nombreRestaurante}</Text>
             </View>
+
+            {onEliminar && (
+                <TouchableOpacity 
+                    style={styles.botonEliminar} 
+                    onPress={() => onEliminar(id)}
+                    activeOpacity={0.7}
+                >
+                    <IconSymbol name="xmark" size={20} color="#FF3B30" />
+                </TouchableOpacity>
+            )}
         </View>
     );
 };

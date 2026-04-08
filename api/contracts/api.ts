@@ -148,6 +148,7 @@ export interface Plato {
     nombreRestaurante: string;
     precio?: number;
     imagenUri: string;
+    descripcion?: string;
     activo: boolean;
     createdAt?: string;
 }
@@ -161,6 +162,7 @@ export function mapPlatoBackendToPlato(p: PlatoBackend, nombreRestaurante = ''):
         nombreRestaurante,
         precio: p.price,
         imagenUri: p.photo_url,
+        descripcion: p.description,
         activo: p.is_active,
         createdAt: p.created_at,
     };

@@ -22,7 +22,10 @@ export function HeaderAppWeb({ userName, userAvatar, onLogout }: HeaderAppProps)
                     style={styles.logoImage}
                     resizeMode="contain"
                 />
-                <Text style={styles.title}>FoodMatch Web</Text>
+                <View>
+                    <Text style={styles.title}>Food Swap</Text>
+                    <Text style={{ fontSize: 12, color: '#8B7E74', fontWeight: '500', marginTop: -2 }}>Elige y come</Text>
+                </View>
             </View>
             <View style={styles.userSection}>
                 <TouchableOpacity style={styles.userProfile} onPress={() => setMenuVisible(true)}>

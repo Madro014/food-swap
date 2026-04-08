@@ -143,7 +143,7 @@ export const platosService = {
      */
     listarPlatosActivos: async (token: string): Promise<ApiResponse<Plato[]>> => {
         try {
-            const res = await fetch(`${API_BASE_URL}/dishes/active`, {
+            const res = await fetch(`${API_BASE_URL}/dishes/all`, {
                 method: 'GET',
                 headers: getAuthHeaders(token),
             });

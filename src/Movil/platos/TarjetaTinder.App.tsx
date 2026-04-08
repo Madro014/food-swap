@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Image, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -10,14 +9,16 @@ interface TarjetaDeComidaProps {
     plato: PlatoType;
     alAceptar: (plato: PlatoType) => void;
     alRechazar: (plato: PlatoType) => void;
+    deshabilitada?: boolean;
 }
 
-export function TarjetaTinderApp({ plato, alAceptar, alRechazar }: TarjetaDeComidaProps) {
+export function TarjetaTinderApp({ plato, alAceptar, alRechazar, deshabilitada }: TarjetaDeComidaProps) {
     const { width: AnchoPantalla } = useWindowDimensions();
     const x = useSharedValue(0);
     const y = useSharedValue(0);
 
     const deslizarGesto = Gesture.Pan()
+        .enabled(!deshabilitada)
         .onUpdate((evento) => {
             x.value = evento.translationX;
             y.value = evento.translationY;
@@ -39,26 +40,33 @@ export function TarjetaTinderApp({ plato, alAceptar, alRechazar }: TarjetaDeComi
         transform: [
             { translateX: x.value },
             { translateY: y.value },
-            { rotate: `${x.value / 20}deg` }
+            { rotate: `${x.value / 25}deg` }
         ],
     }));
 
     return (
         <GestureDetector gesture={deslizarGesto}>
-            <Animated.View style={[styles.cardWrapper, estiloMovimiento]}>
-                <View style={styles.card}>
-                    <Image source={{ uri: plato.foto }} style={styles.image} />
-                    <LinearGradient colors={['transparent', 'rgba(0,0,0,0.85)']} style={styles.gradient}>
-                        <View style={styles.infoContainer}>
-                            <Text style={styles.name}>{plato.nombre}</Text>
-                            <View style={styles.detailsRow}>
-                                <Text style={styles.restaurant}>{plato.restaurante}</Text>
-                                <View style={styles.distanceBadge}>
-                                    <Text style={styles.distance}>{plato.distancia} km</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </LinearGradient>
+            <Animated.View style={[styles.container, estiloMovimiento]}>
+                <Image source={{ uri: plato.foto }} style={styles.image} />
+                
+        
+                <View style={styles.priceTag}>
+                    <Text style={styles.priceText}>${plato.precio}</Text>
+                </View>
+
+                {/* Info Container with glassmorphism feel */}
+                <View style={styles.infoContainer}>
+                    <Text style={styles.restaurant}>{plato.restaurante}</Text>
+                    <Text style={styles.nombre}>{plato.nombre}</Text>
+                    
+                    <Text style={[styles.descripcion, { marginBottom: 12 }]} numberOfLines={2}>
+                        {plato.descripcion}
+                    </Text>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16, marginRight: 6 }}>📍</Text>
+                        <Text style={styles.descripcion}>A {plato.distancia || 0.1} km de ti</Text>
+                    </View>
                 </View>
             </Animated.View>
         </GestureDetector>

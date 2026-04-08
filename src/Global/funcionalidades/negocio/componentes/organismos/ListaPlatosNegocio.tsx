@@ -3,11 +3,19 @@ import { View, Text, FlatList } from 'react-native';
 import { styles } from '../../dashboard.styles';
 import { TarjetaPlatoNegocio } from '../moleculas/TarjetaPlatoNegocio';
 
-interface ListaPlatosNegocioProps {
-    platosNegocio: { nombreRestaurante: string, nombrePlato: string, imagenUri: string | null }[];
+interface PlatoDashboard {
+    id: string;
+    nombreRestaurante: string;
+    nombrePlato: string;
+    imagenUri: string | null;
 }
 
-export const ListaPlatosNegocio = ({ platosNegocio = [] }: ListaPlatosNegocioProps) => {
+interface ListaPlatosNegocioProps {
+    platosNegocio: PlatoDashboard[];
+    onEliminarPlato?: (id: string) => void;
+}
+
+export const ListaPlatosNegocio = ({ platosNegocio = [], onEliminarPlato }: ListaPlatosNegocioProps) => {
     return (
         <View style={styles.contenedorContenido}>
             <View style={styles.cabeceraLista}>
@@ -22,12 +30,14 @@ export const ListaPlatosNegocio = ({ platosNegocio = [] }: ListaPlatosNegocioPro
             ) : (
                 <FlatList
                     data={platosNegocio}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <TarjetaPlatoNegocio 
+                            id={item.id}
                             nombreRestaurante={item.nombreRestaurante} 
                             nombrePlato={item.nombrePlato} 
                             imagenUri={item.imagenUri} 
+                            onEliminar={onEliminarPlato}
                         />
                     )}
                     showsVerticalScrollIndicator={false}
