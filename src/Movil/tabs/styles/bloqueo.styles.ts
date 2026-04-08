@@ -1,0 +1,73 @@
+import { StyleSheet } from 'react-native';
+
+export const estilosBloqueo = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  titulo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#322e2b',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  descripcion: {
+    fontSize: 16,
+    color: '#605a57',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 24,
+  },
+  ayudaWebCaja: {
+    backgroundColor: '#fff3ed',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 32,
+    borderWidth: 1,
+    borderColor: '#ffdcc2',
+  },
+  ayudaWebTexto: {
+    color: '#D9501E',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    fontWeight: '500',
+  },
+  overlayModal: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  tarjetaModal: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    width: '100%',
+    maxWidth: 350,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  tituloModal: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FF6B35',
+    marginBottom: 12,
+  },
+  textoModal: {
+    fontSize: 16,
+    color: '#605a57',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 24,
+  },
+});
