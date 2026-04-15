@@ -137,28 +137,6 @@ export const platosService = {
     },
 
     /**
-     * Lista solo los platos activos de la empresa autenticada.
-     *
-     * GET /api/v1/dishes/active
-     */
-    listarPlatosActivos: async (token: string): Promise<ApiResponse<Plato[]>> => {
-        try {
-            const res = await fetch(`${API_BASE_URL}/dishes/all`, {
-                method: 'GET',
-                headers: getAuthHeaders(token),
-            });
-            const json = await res.json();
-            if (!json.success) {
-                return { success: false, status: json.status, message: json.message, errors: json.errors };
-            }
-            const platos: Plato[] = (json.data?.dishes ?? []).map((p: PlatoBackend) => mapPlato(p));
-            return { success: true, message: json.message, data: platos };
-        } catch (error) {
-            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
-        }
-    },
-
-    /**
      * Actualiza los datos de un plato existente.
      * Envía solo los campos que cambiaron (partial update).
      *
