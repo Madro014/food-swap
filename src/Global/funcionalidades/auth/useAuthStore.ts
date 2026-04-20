@@ -32,6 +32,7 @@ interface AuthState {
     updateAvatar: (avatar: string) => void;
     setAlcanceKm: (km: number) => void;
     limpiarError: () => void;
+    fetchPerfil: () => Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -168,4 +169,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     updateAvatar: (avatar) => set({ userAvatar: avatar }),
     setAlcanceKm: (km) => set({ alcanceKm: km }),
     limpiarError: () => set({ errorAuth: null }),
+
+    /**
+     * Obtiene el perfil desde el backend y actualiza el store.
+     * Usa el endpoint correcto según el rol.
+     */
+    fetchPerfil: async () => {
+        const { token, rol } = get();
+        if (!token || !rol) return;
+
+        try {
+            if (rol === 'cliente') {
+                const res = await authService.perfilUsuario(token);
+                if (res.success && res.data) {
+                    set({
+                        userName: res.data.name,
+                        email: res.data.email,
+                        telefono: res.data.phone ?? null,
+                    });
+                }
+            } else if (rol === 'negocio') {
+                const res = await authService.perfilEmpresa(token);
+                if (res.success && res.data) {
+                    set({
+                        userName: res.data.name,
+                        email: res.data.email,
+                        telefono: res.data.phone ?? null,
+                        direccion: res.data.address ?? null,
+                        userAvatar: res.data.logo_url ?? null,
+                    });
+                }
+            }
+        } catch {
+            // Silently fail - no bloquea la UX
+        }
+    },
 }));

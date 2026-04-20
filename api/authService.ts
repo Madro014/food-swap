@@ -7,6 +7,8 @@ import type {
     RegistroEmpresaData,
     Usuario,
     UbicacionFija,
+    UserProfileBackend,
+    CompanyProfileBackend,
 } from './contracts/api';
 
 // ---------------------------------------------------------------------------
@@ -175,7 +177,7 @@ export const authService = {
      * Perfil del usuario autenticado.
      * GET /api/v1/user/profile
      */
-    perfilUsuario: async (token: string): Promise<ApiResponse<unknown>> => {
+    perfilUsuario: async (token: string): Promise<ApiResponse<UserProfileBackend>> => {
         try {
             const res = await fetch(`${API_BASE_URL}/user/profile`, {
                 method: 'GET',
@@ -192,7 +194,7 @@ export const authService = {
      * Perfil de empresa autenticada.
      * GET /api/v1/company/profile
      */
-    perfilEmpresa: async (token: string): Promise<ApiResponse<unknown>> => {
+    perfilEmpresa: async (token: string): Promise<ApiResponse<CompanyProfileBackend>> => {
         try {
             const res = await fetch(`${API_BASE_URL}/company/profile`, {
                 method: 'GET',

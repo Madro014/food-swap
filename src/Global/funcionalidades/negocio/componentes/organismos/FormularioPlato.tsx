@@ -25,7 +25,8 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
     const [precio, setPrecio] = useState('');
     const [imagenUri, setImagenUri] = useState<string | null>(null);
     const [descripcion, setDescripcion] = useState('');
-
+    
+    // Estado de errores
     const [errores, setErrores] = useState({
         nombreRestaurante: '',
         nombrePlato: '',
@@ -72,6 +73,8 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
             });
         }
     };
+
+    const placeholderIcon = 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1775621191/Ícono_de_carga_temático_de_comida_hjuvap.png';
 
     return (
         <View style={styles.tarjetaFormulario}>
@@ -140,7 +143,11 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                         </>
                     ) : (
                         <View style={styles.placeholderImagenContenedor}>
-                            <IconSymbol name="camera.fill" size={32} color="#FF6B35" />
+                            <Image 
+                                source={{ uri: placeholderIcon }} 
+                                style={[styles.iconoCarga, { width: 40, height: 40, marginBottom: 8 }]} 
+                                resizeMode="contain"
+                            />
                             <Text style={styles.textoPlaceholder}>Seleccionar Foto del Plato</Text>
                             <Text style={styles.textoPista}>Arrastra y suelta o haz clic para subir tu foto (Máx 5MB)</Text>
                         </View>

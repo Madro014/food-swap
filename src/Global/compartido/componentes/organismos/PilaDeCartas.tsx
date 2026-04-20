@@ -53,7 +53,11 @@ export function PilaDeCartas({ platos, cargando, onAceptar, onRechazar, limiteAl
             <View style={styles.emptyContainer}>
                 <Text style={styles.emptyIcon}>{limiteAlcanzado ? '🔒' : '🍽️'}</Text>
                 <Text style={styles.emptyText}>
+<<<<<<< HEAD
                     {limiteAlcanzado ? '¡Límite de Matches alcanzado!' : '¡Nada por hoy!'}
+=======
+                    {limiteAlcanzado ? '¡Límite de Matches alcanzado!' : '¡Has visto todo por hoy!'}
+>>>>>>> origin/main
                 </Text>
                 <Text style={styles.emptySub}>
                     {limiteAlcanzado 

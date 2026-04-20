@@ -137,6 +137,7 @@ export const platosService = {
     },
 
     /**
+<<<<<<< HEAD
      * Lista solo los platos activos de la empresa autenticada.
      *
      * GET /api/v1/dishes/active
@@ -159,6 +160,8 @@ export const platosService = {
     },
 
     /**
+=======
+>>>>>>> origin/main
      * Actualiza los datos de un plato existente.
      * Envía solo los campos que cambiaron (partial update).
      *

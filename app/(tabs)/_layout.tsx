@@ -77,7 +77,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="explore" // Cambiado de explore a explore/matches si es el caso, pero el archivo actual dice explore
+          name="explore"
           options={{
             title: 'Matches',
             tabBarIcon: ({ color }) => <IconSymbol size={32} name="heart.fill" color={color} />,

@@ -173,7 +173,7 @@ export function mapPlatoBackendToPlato(p: PlatoBackend, nombreRestaurante = ''):
 // ---------------------------------------------------------------------------
 
 export interface SesionData {
-    id: string;
+    session_id: string;
     user_id: string;
     user_lat: number;
     user_lng: number;
@@ -227,4 +227,28 @@ export interface CloudinaryResponse {
     secure_url: string;
     public_id: string;
     [key: string]: unknown;
+}
+
+// ---------------------------------------------------------------------------
+// Perfiles
+// ---------------------------------------------------------------------------
+
+export interface UserProfileBackend {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    created_at: string;
+}
+
+export interface CompanyProfileBackend {
+    id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    address: string;
+    lat: number;
+    lng: number;
+    logo_url?: string;
+    created_at: string;
 }

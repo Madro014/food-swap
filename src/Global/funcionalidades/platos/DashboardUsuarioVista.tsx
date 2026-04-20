@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, FlatList, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
 import { useAuthStore } from '../auth/useAuthStore';
+import { geoService } from '@api/geoService';
 import { platosService } from '@api/platosService';
+import { pedirPermisosUbicacion } from '@api/UbicacionServicio';
 import { Plato } from '@api/contracts/api';
 import { useRouter } from 'expo-router';
 import { styles } from './DashboardUsuario.styles';
@@ -19,12 +21,60 @@ export default function DashboardUsuarioVista() {
 
     useEffect(() => {
         const fetchPlatos = async () => {
-            if (!token) return;
-            const res = await platosService.listarPlatosActivos(token);
-            if (res.success && res.data) {
-                setPlatos(res.data);
+            if (!token) {
+                setCargando(false);
+                return;
             }
-            setCargando(false);
+
+            try {
+                const ubi = await pedirPermisosUbicacion();
+                const lat = ubi?.latitud ?? 0;
+                const lon = ubi?.longitud ?? 0;
+
+                const sesionRes = await geoService.obtenerSesionActiva(token);
+                let sessionId: string | null = null;
+
+                if (sesionRes.success && sesionRes.data) {
+                    sessionId = sesionRes.data.session_id;
+                } else {
+                    const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, 10);
+                    if (nuevaSesion.success && nuevaSesion.data) {
+                        sessionId = nuevaSesion.data.session_id;
+                    }
+                }
+
+                if (sessionId) {
+                    const res = await geoService.obtenerPlatosCercanos(token, sessionId);
+                    if (res.success && res.data && res.data.data.dishes.length > 0) {
+                        const platosMapeados: Plato[] = res.data.data.dishes.map((d: any) => ({
+                            id: d.id,
+                            empresaId: d.company?.id || '',
+                            nombrePlato: d.name,
+                            nombreRestaurante: d.company?.name || 'Restaurante Local',
+                            imagenUri: d.photo_url || '',
+                            precio: d.price,
+                            descripcion: d.description || '',
+                            activo: true,
+                        }));
+                        setPlatos(platosMapeados);
+                    } else {
+                        // Fallback a platos generales si no hay cercanos
+                        const generalRes = await platosService.listarPlatosActivos(token);
+                        if (generalRes.success && generalRes.data) {
+                            setPlatos(generalRes.data);
+                        }
+                    }
+                } else {
+                    const generalRes = await platosService.listarPlatosActivos(token);
+                    if (generalRes.success && generalRes.data) {
+                        setPlatos(generalRes.data);
+                    }
+                }
+            } catch (error) {
+                console.error("Error al cargar platos en dashboard:", error);
+            } finally {
+                setCargando(false);
+            }
         };
         fetchPlatos();
     }, [token]);

@@ -92,7 +92,7 @@ export const styles = StyleSheet.create({
     },
     etiquetaEmpresa: {
         fontSize: 11,
-        color: '##ff6b35',
+        color: '#ff6b35',
         fontWeight: 'bold',
         textTransform: 'uppercase',
         letterSpacing: 1,
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
         marginBottom: 2,
     },
     textoRestaurante: {
-        fontSize: 15,
+        fontSize: 14,
         color: '#8B7E74',
         fontWeight: '500',
     },

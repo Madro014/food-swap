@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
+<<<<<<< HEAD
 import {
     SafeAreaView, ActivityIndicator, View, Alert,
     Modal, KeyboardAvoidingView, Platform, ScrollView,
     TouchableWithoutFeedback
 } from 'react-native';
+=======
+import { SafeAreaView, ActivityIndicator, View, Alert } from 'react-native';
+>>>>>>> origin/main
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { useRouter } from 'expo-router';
 import { styles } from '@Global/funcionalidades/negocio/dashboard.styles';
@@ -21,19 +25,45 @@ interface PlatoDashboard {
     imagenUri: string | null;
 }
 
+interface PlatoDashboard {
+    id: string;
+    nombreRestaurante: string;
+    nombrePlato: string;
+    imagenUri: string | null;
+}
+
 export default function NegocioDashboard() {
     const { userName, userAvatar, logout, token } = useAuthStore();
     const router = useRouter();
+<<<<<<< HEAD
 
     const handleLogout = () => {
         logout();
         router.replace('/login');
     };
 
+=======
+    
+>>>>>>> origin/main
     const [platosNegocio, setPlatosNegocio] = useState<PlatoDashboard[]>([]);
     const [cargando, setCargando] = useState(true);
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [subiendo, setSubiendo] = useState(false);
+
+    const cargarPlatos = useCallback(async () => {
+        if (!token) return;
+        const res = await platosService.listarPlatosNegocio(token);
+        if (res.success && res.data) {
+            const mapped = res.data.map(p => ({
+                id: p.id,
+                nombreRestaurante: p.nombreRestaurante || userName || 'Mi Restaurante',
+                nombrePlato: p.nombrePlato,
+                imagenUri: p.imagenUri
+            }));
+            setPlatosNegocio(mapped.reverse());
+        }
+        setCargando(false);
+    }, [token, userName]);
 
     const cargarPlatos = useCallback(async () => {
         if (!token) return;
@@ -57,6 +87,10 @@ export default function NegocioDashboard() {
     const eliminarPlato = async (id: string) => {
         if (!token) return;
 
+<<<<<<< HEAD
+=======
+        // Confirmación antes de borrar
+>>>>>>> origin/main
         const confirmar = async () => {
             setCargando(true);
             const res = await platosService.eliminarPlato(token, id);
@@ -68,12 +102,17 @@ export default function NegocioDashboard() {
             }
         };
 
+<<<<<<< HEAD
+=======
+        // En web window.confirm, en móvil Alert.alert
+>>>>>>> origin/main
         if (typeof window !== 'undefined' && (window as any).confirm) {
             if (confirm('¿Estás seguro de que quieres eliminar este plato?')) {
                 await confirmar();
             }
         } else {
             alert('¿Estás seguro de que quieres eliminar este plato permanentemente?');
+<<<<<<< HEAD
         }
     };
 
@@ -104,6 +143,9 @@ export default function NegocioDashboard() {
             Alert.alert('Error', 'Hubo un problema de conexión.');
         } finally {
             setSubiendo(false);
+=======
+            // Nota: En un entorno de producción, puedes usar un modal personalizado en vez de Alert importado de react-native.
+>>>>>>> origin/main
         }
     };
 
@@ -120,12 +162,18 @@ export default function NegocioDashboard() {
                     <ActivityIndicator size="large" color="#FF6B35" />
                 </View>
             ) : (
+<<<<<<< HEAD
                 <ListaPlatosNegocio
                     platosNegocio={platosNegocio}
+=======
+                <ListaPlatosNegocio 
+                    platosNegocio={platosNegocio} 
+>>>>>>> origin/main
                     onEliminarPlato={eliminarPlato}
                 />
             )}
 
+<<<<<<< HEAD
             {/* ── Navbar persistente ── */}
             <NavBarNegocio onPublicarPress={() => setMostrarFormulario(true)} />
 
@@ -162,6 +210,9 @@ export default function NegocioDashboard() {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
+=======
+            <BotonSubirPlato onPress={() => router.push('/crear-plato' as any)} />
+>>>>>>> origin/main
         </SafeAreaView>
     );
 }

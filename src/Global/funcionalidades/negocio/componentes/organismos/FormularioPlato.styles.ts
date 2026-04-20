@@ -3,12 +3,12 @@ import { StyleSheet, Platform } from 'react-native';
 export const styles = StyleSheet.create({
     tarjetaFormulario: {
         width: '100%',
-        maxWidth: 440, // Slightly narrower
+        maxWidth: 440,
         alignSelf: 'center',
-        padding: 24, // Reduced from 28
-        paddingTop: 16, // Reduced from 20
+        padding: 24,
+        paddingTop: 16,
         backgroundColor: 'rgba(255, 255, 255, 0.92)',
-        borderRadius: 24, // Slightly less round for compactness
+        borderRadius: 24,
         shadowColor: 'rgba(30, 20, 10, 0.25)',
         shadowOffset: { width: 0, height: 20 },
         shadowOpacity: 0.2,
@@ -25,16 +25,16 @@ export const styles = StyleSheet.create({
     // ── Header decorativo ──
     headerDecoativo: {
         alignItems: 'center',
-        marginBottom: 12, // Reduced from 20
+        marginBottom: 12,
     },
     emojiBadge: {
-        width: 44, // Reduced from 56
-        height: 44, // Reduced from 56
+        width: 44,
+        height: 44,
         borderRadius: 14,
         backgroundColor: '#FFF3ED',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 8, // Reduced from 12
+        marginBottom: 8,
         shadowColor: '#FF6B35',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.12,
@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
     separador: {
         height: 1,
         backgroundColor: '#F0EBE7',
-        marginVertical: 12, // Reduced from 18
+        marginVertical: 12,
         marginHorizontal: 8,
     },
 
@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
     // ── Image picker ──
     botonImagen: {
         width: '100%',
-        height: 110, // Significantly reduced from 150
+        height: 110,
         backgroundColor: '#FFF8F5',
         borderRadius: 12,
         borderWidth: 1.5,
@@ -168,7 +168,7 @@ export const styles = StyleSheet.create({
         marginTop: 2,
     },
     areaTexto: {
-        minHeight: 70, // Reduced from 90
+        minHeight: 70,
         backgroundColor: '#FFFFFF',
         borderRadius: 12,
         padding: 12,
@@ -200,8 +200,8 @@ export const styles = StyleSheet.create({
 
     // ── Botones ──
     botonesContenedor: {
-        marginTop: 8, // Reduced from 12
-        gap: 8, // Reduced from 10
+        marginTop: 8,
+        gap: 8,
     },
     botonCancelar: {
         paddingVertical: 12,
