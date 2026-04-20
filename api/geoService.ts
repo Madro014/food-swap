@@ -71,11 +71,15 @@ export const geoService = {
     ): Promise<ApiResponse<PaginatedResponse<FeedData>>> => {
         try {
             const url = `${API_BASE_URL}/sessions/${sessionId}/feed?page=${pagina}&per_page=${porPagina}`;
+            console.log('[DEBUG obtenerPlatosCercanos] URL:', url);
+            console.log('[DEBUG obtenerPlatosCercanos] Token:', token ? `${token.substring(0, 20)}...` : 'UNDEFINED');
             const res = await fetch(url, {
                 method: 'GET',
                 headers: getAuthHeaders(token),
             });
+            console.log('[DEBUG obtenerPlatosCercanos] Status:', res.status);
             const json = await res.json();
+            console.log('[DEBUG obtenerPlatosCercanos] Response:', JSON.stringify(json));
             return {
                 success: json.success ?? false,
                 status: json.status,

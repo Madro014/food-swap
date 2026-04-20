@@ -31,6 +31,8 @@ export const ListaPlatosNegocio = ({ platosNegocio = [], onEliminarPlato }: List
                 <FlatList
                     data={platosNegocio}
                     keyExtractor={(item) => item.id}
+                    numColumns={2}
+                    columnWrapperStyle={styles.columnaGrid}
                     renderItem={({ item }) => (
                         <TarjetaPlatoNegocio 
                             id={item.id}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { MenuPerfil } from '@Global/compartido/componentes/organismos/MenuPerfil';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';
+import { useRouter } from 'expo-router';
 import { styles } from '@Global/compartido/componentes/organismos/HeaderApp.styles';
 
 interface HeaderAppProps {
@@ -12,17 +13,22 @@ interface HeaderAppProps {
 
 export function HeaderAppApp({ userName, userAvatar, onLogout }: HeaderAppProps) {
     const [menuVisible, setMenuVisible] = useState(false);
+    const router = useRouter();
 
     return (
         <>
         <View style={styles.container}>
-            <View style={styles.logoContainer}>
+            <TouchableOpacity 
+                style={styles.logoContainer} 
+                onPress={() => router.push('/(negocio)' as any)}
+                activeOpacity={0.7}
+            >
                 <Image
                     source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772550710/foodmatch_osnrsz.png' }}
                     style={styles.logoImage}
                     resizeMode="contain"
                 />
-            </View>
+            </TouchableOpacity>
             <View style={styles.userSection}>
                 <TouchableOpacity style={styles.userProfile} onPress={() => setMenuVisible(true)}>
                     <Image

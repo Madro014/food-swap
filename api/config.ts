@@ -16,10 +16,13 @@ export const API_BASE_URL = Platform.OS === 'android'
  * Construye los headers para requests autenticadas con Bearer token.
  */
 export function getAuthHeaders(token: string): Record<string, string> {
-    return {
+    console.log('[DEBUG getAuthHeaders] Token recibido:', token ? `-token-${token.substring(0, 20)}...` : 'UNDEFINED');
+    const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
     };
+    console.log('[DEBUG getAuthHeaders] Headers generados:', headers);
+    return headers;
 }
 
 /**

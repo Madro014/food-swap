@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, Alert, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { platosService } from '@api/platosService';
 import { FormularioPlato } from '@Global/funcionalidades/negocio/componentes/organismos/FormularioPlato';
+import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
 
 export default function PaginaCrearPlato() {
     const router = useRouter();
-    const { token, userName } = useAuthStore();
+    const { token, userName, userAvatar, logout } = useAuthStore();
     const [subiendo, setSubiendo] = useState(false);
 
     const manejarCreacionPlato = async (data: {
@@ -17,11 +18,14 @@ export default function PaginaCrearPlato() {
         imagenUri: string;
         descripcion: string;
     }) => {
-        if (!token) return;
+        if (!token) {
+            Alert.alert('Acceso Denegado', 'Debes iniciar sesión para publicar un plato.');
+            router.replace('/login');
+            return;
+        }
         
         setSubiendo(true);
         try {
-            // Usamos la descripción y el precio reales del formulario
             const result = await platosService.crearPlato(
                 token, 
                 data.nombrePlato, 
@@ -31,22 +35,30 @@ export default function PaginaCrearPlato() {
             );
 
             if (result.success) {
-                // Navegar de vuelta al dashboard de negocio
-                router.replace('/(negocio)' as any);
+                router.replace('/(negocio)');
             } else {
-                alert(`Error al crear el plato: ${result.message}`);
-                console.error("Error al crear plato:", result.message);
+                Alert.alert('Error', result.message || 'No pudimos crear tu plato en este momento.');
             }
         } catch (error) {
-            alert('Hubo un problema de conexión al intentar subir el plato.');
-            console.error("Error catch crear plato:", error);
+            Alert.alert('Conexión', 'Hubo un problema al contactar con el servidor.');
+            console.error("Error al crear plato:", error);
         } finally {
             setSubiendo(false);
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        router.replace('/login');
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
+            <HeaderApp 
+                userName={userName} 
+                userAvatar={userAvatar} 
+                onLogout={handleLogout} 
+            />
             <KeyboardAvoidingView 
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
@@ -54,10 +66,18 @@ export default function PaginaCrearPlato() {
                 <ScrollView 
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
                 >
                     <FormularioPlato 
                         nombreRestauranteInicial={userName || ''} 
                         alHacerSubmit={manejarCreacionPlato}
+                        alCancelar={() => {
+                            if (router.canGoBack()) {
+                                router.back();
+                            } else {
+                                router.replace('/(negocio)');
+                            }
+                        }}
                         cargando={subiendo}
                     />
                 </ScrollView>
@@ -69,10 +89,13 @@ export default function PaginaCrearPlato() {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#FF7E40', 
     },
     scrollContent: {
         flexGrow: 1,
-        paddingBottom: 40,
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 12,
+        paddingBottom: 24,
     }
 });

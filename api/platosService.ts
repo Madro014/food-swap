@@ -10,13 +10,6 @@ import { mapPlatoBackendToPlato as mapPlato } from './contracts/api';
 export const platosService = {
     /**
      * Crea un nuevo plato para la empresa autenticada.
-     *
-     * Flujo en dos pasos:
-     * 1. Sube la imagen a Cloudinary vía POST /api/v1/upload (multipart/form-data)
-     * 2. Crea el plato con la URL pública vía POST /api/v1/dishes (JSON + Bearer token)
-     *
-     * POST /api/v1/upload
-     * POST /api/v1/dishes
      */
     crearPlato: async (
         token: string,
@@ -30,7 +23,6 @@ export const platosService = {
 
             // Paso 1: subir imagen si existe mediante Presigned URL
             if (imagenUri) {
-                // 1.1 Obtener la URL y los parámetros de Cloudinary firmados por nuestro backend Go
                 const signatureRes = await fetch(`${API_BASE_URL}/upload/presigned-url`, {
                     method: 'POST',
                     headers: getAuthHeaders(token),
@@ -48,7 +40,6 @@ export const platosService = {
 
                 const cloudinaryData = signatureJson.data as PresignedURLData;
                 
-                // 1.2 Construir FormData inyectando todos los "fields" devueltos por el backend y finalmente la imagen.
                 const formData = new FormData();
                 Object.entries(cloudinaryData.fields).forEach(([key, value]) => {
                     if (value !== undefined) {
@@ -56,16 +47,12 @@ export const platosService = {
                     }
                 });
 
-                let fileToUpload: any;
                 if (Platform.OS === 'web') {
-                    // En la web, fetch extrae correctamente el Blob desde la URI de Expo (base64/blob)
                     const res = await fetch(imagenUri);
                     const blob = await res.blob();
-                    // Append blob natively in web
                     formData.append('file', blob, 'foto.jpg');
                 } else {
-                    // En React Native (iOS/Android), los archivos se adjuntan así:
-                    fileToUpload = {
+                    const fileToUpload = {
                         uri: imagenUri,
                         name: 'foto.jpg',
                         type: 'image/jpeg',
@@ -73,10 +60,8 @@ export const platosService = {
                     formData.append('file', fileToUpload as unknown as Blob);
                 }
 
-                // 1.3 Hacer subida directa pesada hacia Cloudinary
                 const directUploadRes = await fetch(cloudinaryData.url, {
                     method: 'POST',
-                    // No pasamos Auth porque no es nuestro backend, sino la API pública directa
                     body: formData,
                 });
                 
@@ -114,10 +99,7 @@ export const platosService = {
     },
 
     /**
-     * Lista todos los platos de la empresa autenticada (activos e inactivos).
-     * El backend infiere el empresaId desde el JWT, no hace falta pasarlo.
-     *
-     * GET /api/v1/dishes
+     * Lista todos los platos de la empresa autenticada.
      */
     listarPlatosNegocio: async (token: string): Promise<ApiResponse<Plato[]>> => {
         try {
@@ -137,9 +119,7 @@ export const platosService = {
     },
 
     /**
-     * Lista solo los platos activos de la empresa autenticada.
-     *
-     * GET /api/v1/dishes/active
+     * Lista todos los platos activos (para feed público).
      */
     listarPlatosActivos: async (token: string): Promise<ApiResponse<Plato[]>> => {
         try {
@@ -160,9 +140,6 @@ export const platosService = {
 
     /**
      * Actualiza los datos de un plato existente.
-     * Envía solo los campos que cambiaron (partial update).
-     *
-     * PUT /api/v1/dishes/:platoId
      */
     editarPlato: async (
         token: string,
@@ -196,9 +173,7 @@ export const platosService = {
     },
 
     /**
-     * Activa o desactiva un plato sin eliminarlo del historial.
-     *
-     * PATCH /api/v1/dishes/:platoId/toggle
+     * Activa o desactiva un plato.
      */
     cambiarEstadoPlato: async (
         token: string,
@@ -224,8 +199,6 @@ export const platosService = {
 
     /**
      * Elimina permanentemente un plato.
-     *
-     * DELETE /api/v1/dishes/:platoId
      */
     eliminarPlato: async (token: string, platoId: string): Promise<ApiResponse<void>> => {
         try {
