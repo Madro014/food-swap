@@ -35,10 +35,12 @@ export default function VistaDePlatos() {
             );
         }
 
-        agregarMatch(plato);
-        quitar(plato.id);
-        if (token && sessionId) {
-            await geoService.registrarSwipe(token, sessionId, plato.id, 'right');
+        if (sessionId) {
+            agregarMatch(plato, sessionId);
+            quitar(plato.id);
+            if (token) {
+                await geoService.registrarSwipe(token, sessionId, plato.id, 'right');
+            }
         }
     };
 

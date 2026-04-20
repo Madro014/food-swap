@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
-=======
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
->>>>>>> origin/main
 import { styles } from '../../dashboard.styles';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';
 
@@ -14,18 +9,11 @@ interface TarjetaPlatoNegocioProps {
     nombrePlato: string;
     imagenUri: string | null;
     onEliminar?: (id: string) => void;
-<<<<<<< HEAD
     onEdit?: (id: string) => void;
 }
 
 export const TarjetaPlatoNegocio = ({ id, nombreRestaurante, nombrePlato, imagenUri, onEliminar, onEdit }: TarjetaPlatoNegocioProps) => {
     const [isHovered, setIsHovered] = useState(false);
-
-=======
-}
-
-export const TarjetaPlatoNegocio = ({ id, nombreRestaurante, nombrePlato, imagenUri, onEliminar }: TarjetaPlatoNegocioProps) => {
->>>>>>> origin/main
     return (
         <Pressable 
             style={({ pressed }) => [
@@ -52,7 +40,6 @@ export const TarjetaPlatoNegocio = ({ id, nombreRestaurante, nombrePlato, imagen
                 )}
             </View>
 
-<<<<<<< HEAD
             <View style={styles.infoPlato}>
                 <Text style={styles.etiquetaEmpresa} numberOfLines={1}>{nombreRestaurante}</Text>
                 <Text style={styles.tituloPlato} numberOfLines={1}>{nombrePlato}</Text>
@@ -72,17 +59,5 @@ export const TarjetaPlatoNegocio = ({ id, nombreRestaurante, nombrePlato, imagen
                 </TouchableOpacity>
             )}
         </Pressable>
-=======
-            {onEliminar && (
-                <TouchableOpacity 
-                    style={styles.botonEliminar} 
-                    onPress={() => onEliminar(id)}
-                    activeOpacity={0.7}
-                >
-                    <IconSymbol name="xmark" size={20} color="#FF3B30" />
-                </TouchableOpacity>
-            )}
-        </View>
->>>>>>> origin/main
     );
 };

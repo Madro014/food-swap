@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     },
     imageWeb: {
         width: '100%',
-        height: 300, // Más alta
+        aspectRatio: 4/3,
         borderRadius: 0,
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,

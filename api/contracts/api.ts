@@ -40,6 +40,7 @@ export interface UsuarioInfo {
     name: string;
     email: string;
     phone?: string;
+    avatar_url?: string;
 }
 
 /** Datos devueltos al registrar un usuario */
@@ -238,6 +239,7 @@ export interface UserProfileBackend {
     name: string;
     email: string;
     phone?: string;
+    avatar_url?: string;
     created_at: string;
 }
 

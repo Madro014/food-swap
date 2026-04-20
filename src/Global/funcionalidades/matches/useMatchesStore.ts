@@ -16,24 +16,40 @@ export interface PlatoType {
 // asi será la memoria de nuestra tienda
 interface MatchesStore {
     matches: PlatoType[];         // lista de los platos que te gustaron
-    agregarMatch: (plato: PlatoType) => void; // funcion para añadir uno nuevo
+    sessionId: string | null;     // ID de sesión actual
+    agregarMatch: (plato: PlatoType, sessionId: string) => void; // funcion para añadir uno nuevo
     limpiarMatches: () => void;   // funcion para borrarlos todos (opcional)
 }
 
 // creamos la "caja fuerte" que guarda nuestros matches disponibles en toda la app
 export const useMatchesStore = create<MatchesStore>((set) => ({
-    matches: [], // empezamos sin matches
+    matches: [], 
+    sessionId: null,
 
-    // esta funcion se llama cuando deslizas a la derecha
-    agregarMatch: (plato) =>
+    agregarMatch: (plato, sessionId) =>
         set((estadoActual) => {
-            // verificamos que no esté ya en la lista para no repetirlo
+            // Si la sesión cambió, resetear y añadir el primero
+            if (estadoActual.sessionId !== sessionId) {
+                return { 
+                    matches: [plato], 
+                    sessionId: sessionId 
+                };
+            }
+
+            // Límite estricto de 3 matches
+            if (estadoActual.matches.length >= 3) {
+                return estadoActual;
+            }
+
+            // Evitar duplicados
             const yaExiste = estadoActual.matches.some(p => p.id === plato.id);
             if (yaExiste) return estadoActual;
 
-            // lo ponemos de primero en la lista
-            return { matches: [plato, ...estadoActual.matches] };
+            return { 
+                matches: [plato, ...estadoActual.matches],
+                sessionId: sessionId
+            };
         }),
 
-    limpiarMatches: () => set({ matches: [] })
+    limpiarMatches: () => set({ matches: [], sessionId: null })
 }));

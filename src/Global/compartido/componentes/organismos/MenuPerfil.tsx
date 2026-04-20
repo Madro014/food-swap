@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Platform, Pressable } from 'react-native';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
-import { IconSymbol } from '@Global/components/ui/icon-symbol';
 import * as ImagePicker from 'expo-image-picker';
 
-const iconosData: Array<{id: string, url: string}> = require('../../../../../assets/data/iconos.json');
+const iconosData: {id: string, url: string}[] = require('../../../../../assets/data/iconos.json');
 
 interface MenuPerfilProps {
     visible: boolean;
@@ -12,13 +11,13 @@ interface MenuPerfilProps {
 }
 
 export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
-    const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm, fetchPerfil } = useAuthStore();
+    const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm, fetchPerfil, logout } = useAuthStore();
 
     useEffect(() => {
         if (visible) {
             fetchPerfil();
         }
-    }, [visible]);
+    }, [visible, fetchPerfil]);
 
     const cambiarAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,7 +28,10 @@ export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
         });
 
         if (!result.canceled) {
-            updateAvatar(result.assets[0].uri);
+            const success = await updateAvatar(result.assets[0].uri);
+            if (!success) {
+                alert('No se pudo actualizar la foto de perfil. Inténtalo de nuevo.');
+            }
         }
     };
 
@@ -37,7 +39,6 @@ export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
 
     // Dependiendo del rol, ajustamos las etiquetas
     const rolFormateado = rol === 'negocio' ? 'Establecimiento' : 'Cliente';
-    const saludo = rol === 'negocio' ? 'Bienvenido a tu panel de control.' : '¡Qué bueno verte por aquí!';
 
     return (
         <Modal
@@ -126,6 +127,18 @@ export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
                     </View>
                     
                     <View style={styles.divider} />
+
+                    <TouchableOpacity 
+                        style={[styles.cerrarMenuBtn, { backgroundColor: '#FFEEEDED', marginBottom: 12 }]} 
+                        onPress={() => {
+                            onClose();
+                            logout();
+                            // El router se manejará en el componente padre si es necesario, 
+                            // pero como es un store, podemos forzar un reload o navegación
+                        }}
+                    >
+                        <Text style={[styles.cerrarMenuTexto, { color: '#EF4444' }]}>Cerrar Sesión</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity 
                         style={styles.cerrarMenuBtn} 

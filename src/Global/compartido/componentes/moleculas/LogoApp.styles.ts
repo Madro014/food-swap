@@ -6,8 +6,10 @@ export const styles = StyleSheet.create({
         marginBottom: 40,
     },
     image: {
-        width: 380,
-        height: 120,
+        width: '90%',
+        maxWidth: 380,
+        height: undefined,
+        aspectRatio: 3.1,
         marginBottom: 10,
         tintColor: '#FF6B35',
     },

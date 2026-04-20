@@ -85,9 +85,9 @@ export const styles = StyleSheet.create({
         color: '#10B981',
     },
     actionButton: {
-        width: 68,
-        height: 68,
-        borderRadius: 34,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',

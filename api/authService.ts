@@ -22,6 +22,7 @@ function mapLoginToUsuario(data: LoginData): Usuario {
         nombre: data.user.name,
         email: data.user.email,
         rol: data.actor_type === 'company' ? 'negocio' : 'cliente',
+        avatarUrl: data.user.avatar_url,
         token: data.token,
     };
 }
@@ -202,6 +203,42 @@ export const authService = {
             });
             const json = await res.json();
             return { success: json.success, message: json.message, data: json.data, errors: json.errors };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Actualiza el avatar del usuario.
+     * PATCH /api/v1/user/avatar
+     */
+    actualizarAvatarUsuario: async (token: string, avatarUrl: string): Promise<ApiResponse<void>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/user/avatar`, {
+                method: 'PATCH',
+                headers: getAuthHeaders(token),
+                body: JSON.stringify({ url: avatarUrl }),
+            });
+            const json = await res.json();
+            return { success: json.success, message: json.message, errors: json.errors };
+        } catch (error) {
+            return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
+        }
+    },
+
+    /**
+     * Actualiza el logo de la empresa.
+     * PATCH /api/v1/company/logo
+     */
+    actualizarLogoEmpresa: async (token: string, logoUrl: string): Promise<ApiResponse<void>> => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/company/logo`, {
+                method: 'PATCH',
+                headers: getAuthHeaders(token),
+                body: JSON.stringify({ url: logoUrl }),
+            });
+            const json = await res.json();
+            return { success: json.success, message: json.message, errors: json.errors };
         } catch (error) {
             return { success: false, message: 'Error de conexión con el servidor', errors: String(error) };
         }

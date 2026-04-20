@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
     container: {
@@ -29,33 +29,36 @@ export const styles = StyleSheet.create({
     },
     webBrandTextContainer: {
         padding: 40,
+        width: '100%',
         maxWidth: 500,
         alignItems: 'flex-start',
         zIndex: 10,
     },
     webLogo: {
-        width: 320,
-        height: 120,
+        width: '80%',
+        maxWidth: 320,
+        height: undefined,
+        aspectRatio: 2.6,
         marginBottom: 40,
         tintColor: '#ffffff',
     },
     webHeadline: {
-        fontSize: 48,
+        fontSize: Platform.OS === 'web' ? 44 : 32,
         fontFamily: 'Inter_700Bold',
         color: '#ffffff',
         marginBottom: 16,
-        lineHeight: 56,
+        lineHeight: Platform.OS === 'web' ? 52 : 40,
     },
     webSubHeadline: {
-        fontSize: 20,
+        fontSize: 18,
         fontFamily: 'Inter_400Regular',
         color: '#fff0e9',
-        lineHeight: 28,
+        lineHeight: 26,
     },
     content: {
         flex: 1,
         justifyContent: 'center',
-        paddingHorizontal: 30,
+        paddingHorizontal: '5%',
         zIndex: 1,
     },
     contentWeb: {
@@ -64,7 +67,7 @@ export const styles = StyleSheet.create({
         bottom: 0,
         width: '50%',
         backgroundColor: '#fef5f0',
-        paddingHorizontal: 60,
+        paddingHorizontal: '5%',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -75,6 +78,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderRadius: 32,
         padding: 24,
+        width: '100%',
         shadowColor: '#322e2b',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.06,
@@ -82,10 +86,9 @@ export const styles = StyleSheet.create({
         elevation: 5,
     },
     formContainerWeb: {
-        width: '100%',
+        width: '90%',
         maxWidth: 480,
-        minHeight: 580,
-        padding: 48,
+        padding: 40,
         backgroundColor: '#ffffff',
         shadowOpacity: 0.04,
         shadowRadius: 40,

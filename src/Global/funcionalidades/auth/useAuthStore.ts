@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { authService } from '@api/authService';
+import { uploadService } from '@api/uploadService';
 import type { UbicacionFija } from '@api/contracts/api';
 
 // ---------------------------------------------------------------------------
@@ -29,7 +30,7 @@ interface AuthState {
 
     // Utilidades
     logout: () => void;
-    updateAvatar: (avatar: string) => void;
+    updateAvatar: (avatarUri: string) => Promise<boolean>;
     setAlcanceKm: (km: number) => void;
     limpiarError: () => void;
     fetchPerfil: () => Promise<void>;
@@ -166,7 +167,40 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             errorAuth: null,
         }),
 
-    updateAvatar: (avatar) => set({ userAvatar: avatar }),
+    updateAvatar: async (avatarUri) => {
+        const { token, rol } = get();
+        if (!token || !rol) return false;
+
+        set({ cargando: true });
+        try {
+            // 1. Subir a Cloudinary
+            const publicUrl = await uploadService.subirImagen(token, avatarUri, 'profiles');
+            if (!publicUrl) {
+                set({ cargando: false });
+                return false;
+            }
+
+            // 2. Actualizar en el Backend según el rol
+            let res;
+            if (rol === 'cliente') {
+                res = await authService.actualizarAvatarUsuario(token, publicUrl);
+            } else {
+                res = await authService.actualizarLogoEmpresa(token, publicUrl);
+            }
+
+            if (res.success) {
+                set({ userAvatar: publicUrl, cargando: false });
+                return true;
+            }
+
+            set({ cargando: false });
+            return false;
+        } catch (error) {
+            console.error('Error al actualizar avatar en el store:', error);
+            set({ cargando: false });
+            return false;
+        }
+    },
     setAlcanceKm: (km) => set({ alcanceKm: km }),
     limpiarError: () => set({ errorAuth: null }),
 
@@ -186,6 +220,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                         userName: res.data.name,
                         email: res.data.email,
                         telefono: res.data.phone ?? null,
+                        userAvatar: res.data.avatar_url ?? null,
                     });
                 }
             } else if (rol === 'negocio') {
