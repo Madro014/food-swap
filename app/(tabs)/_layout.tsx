@@ -4,7 +4,7 @@ import { Platform, View, Text, Modal } from 'react-native';
 import * as Location from 'expo-location';
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
-import { estilosBloqueo, estilosTab, getTabBarStyle } from './_layout.styles';
+import { estilosBloqueo, estilosTab, getTabBarStyle } from './tabs.styles';
 
 import { HapticTab } from '@Global/components/haptic-tab';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';

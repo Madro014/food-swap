@@ -33,11 +33,11 @@ export default function DashboardUsuarioVista() {
             let sessionId: string | null = null;
 
             if (sesionRes.success && sesionRes.data) {
-                sessionId = sesionRes.data.id;
+                sessionId = sesionRes.data.session_id;
             } else {
                 const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, 10);
                 if (nuevaSesion.success && nuevaSesion.data) {
-                    sessionId = nuevaSesion.data.id;
+                    sessionId = nuevaSesion.data.session_id;
                 }
             }
 

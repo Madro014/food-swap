@@ -8,11 +8,15 @@ export function usePlatos() {
     const [platos, setPlatos] = useState<PlatoType[]>([]);
     const [cargando, setCargando] = useState(true);
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const { token } = useAuthStore();
+    const { token, alcanceKm } = useAuthStore();
 
     useEffect(() => {
         async function cargar() {
+            console.log('[DEBUG usePlatos] Token:', token);
+            console.log('[DEBUG usePlatos] AlcanceKm:', alcanceKm);
+
             if (!token) {
+                console.log('[DEBUG usePlatos] No hay token, saliendo');
                 setCargando(false);
                 return;
             }
@@ -26,11 +30,11 @@ export function usePlatos() {
                 let curSessionId: string | null = null;
                 
                 if (sesionRes.success && sesionRes.data) {
-                    curSessionId = sesionRes.data.id;
+                    curSessionId = sesionRes.data.session_id;
                 } else {
-                    const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, 10);
+                    const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, alcanceKm);
                     if (nuevaSesion.success && nuevaSesion.data) {
-                        curSessionId = nuevaSesion.data.id;
+                        curSessionId = nuevaSesion.data.session_id;
                     }
                 }
                 setSessionId(curSessionId);

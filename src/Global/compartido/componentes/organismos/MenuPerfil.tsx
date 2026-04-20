@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Platform, Pressable } from 'react-native';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';
@@ -12,7 +12,13 @@ interface MenuPerfilProps {
 }
 
 export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
-    const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm } = useAuthStore();
+    const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm, fetchPerfil } = useAuthStore();
+
+    useEffect(() => {
+        if (visible) {
+            fetchPerfil();
+        }
+    }, [visible]);
 
     const cambiarAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
