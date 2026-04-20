@@ -24,6 +24,16 @@ const MAPPING = {
   'xmark': 'close',
   'info.circle': 'info',
   'plus': 'add',
+  // Business navbar icons
+  'square.grid.2x2.fill': 'grid-view',
+  'plus.circle.fill': 'add-circle',
+  'plus.circle': 'add-circle-outline',
+  'list.bullet': 'format-list-bulleted',
+  'tray.full.fill': 'inbox',
+  // Form icons
+  'fork.knife': 'restaurant',
+  'dollarsign': 'attach-money',
+  'camera.fill': 'camera-alt',
 } as IconMapping;
 
 /**

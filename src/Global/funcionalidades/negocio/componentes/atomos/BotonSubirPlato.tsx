@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from '../../dashboard.styles';
+import { IconSymbol } from '@Global/components/ui/icon-symbol';
 
 interface BotonSubirPlatoProps {
     onPress: () => void;
@@ -8,12 +9,14 @@ interface BotonSubirPlatoProps {
 
 export const BotonSubirPlato = ({ onPress }: BotonSubirPlatoProps) => {
     return (
-        <View style={styles.footer}>
+        <View style={styles.footerContainer}>
             <TouchableOpacity 
                 style={styles.botonSubir} 
                 onPress={onPress}
+                activeOpacity={0.9}
             >
-                <Text style={styles.textoBotonSubir}>+ Subir un nuevo plato</Text>
+                <IconSymbol name="plus" size={20} color="#FFFFFF" />
+                <Text style={styles.textoBotonSubir}>Publicar nuevo plato</Text>
             </TouchableOpacity>
         </View>
     );

@@ -1,6 +1,10 @@
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
-import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, useFonts } from '@expo-google-fonts/inter';
+import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold } from '@expo-google-fonts/inter';
+import { Roboto_400Regular } from '@expo-google-fonts/roboto/400Regular';
+import { Roboto_500Medium } from '@expo-google-fonts/roboto/500Medium';
+import { Roboto_700Bold } from '@expo-google-fonts/roboto/700Bold';
+import { useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { Platform, StatusBar as RNStatusBar } from 'react-native';
@@ -21,12 +25,15 @@ export default function RootLayout() {
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
 
-  // carga las letras Inter que nos regalo gogle fonts
+  // carga las letras Inter y Roboto que nos regalo gogle fonts
   const [letrasCargadas] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
     Inter_700Bold,
     Inter_800ExtraBold,
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
   });
 
   useEffect(() => {
