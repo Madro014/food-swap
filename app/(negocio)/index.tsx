@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-    SafeAreaView, ActivityIndicator, View, Alert,
+    ActivityIndicator, View, Alert,
     Modal, KeyboardAvoidingView, Platform, ScrollView,
     TouchableWithoutFeedback
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { useRouter } from 'expo-router';
 import { styles } from '@Global/funcionalidades/negocio/dashboard.styles';

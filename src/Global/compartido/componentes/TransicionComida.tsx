@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { styles } from './TransicionComida.styles';
 
 export interface TransicionComidaRef {
     iniciar: (onComplete: () => void) => void;
@@ -45,27 +46,3 @@ export const TransicionComida = forwardRef<TransicionComidaRef, { imageUrl?: str
 });
 
 TransicionComida.displayName = 'TransicionComida';
-
-const styles = StyleSheet.create({
-    container: {
-        ...StyleSheet.absoluteFillObject,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 9999,
-        boxShadow: '0px 0px 0px 9999px rgba(0,0,0,0)',
-    },
-    circle: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emoji: {
-        fontSize: 50,
-    },
-    image: {
-        width: 60,
-        height: 60,
-    }
-});

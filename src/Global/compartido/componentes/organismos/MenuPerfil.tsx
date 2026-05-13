@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Platform, Pressable } from 'react-native';
+import React from 'react';
+import { Modal, Text, TouchableOpacity, View, Image, Pressable } from 'react-native';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import * as ImagePicker from 'expo-image-picker';
+import { styles } from './MenuPerfil.styles';
 
 const iconosData: {id: string, url: string}[] = require('../../../../../assets/data/iconos.json');
 
@@ -12,12 +13,13 @@ interface MenuPerfilProps {
 
 export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
     const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm, fetchPerfil, logout } = useAuthStore();
+    const prevVisibleRef = React.useRef(false);
 
-    useEffect(() => {
-        if (visible) {
-            fetchPerfil();
-        }
-    }, [visible, fetchPerfil]);
+    // Cargar perfil cuando el modal se abre (no en cada render)
+    if (visible && !prevVisibleRef.current) {
+        fetchPerfil();
+    }
+    prevVisibleRef.current = visible;
 
     const cambiarAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -151,192 +153,3 @@ export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
         </Modal>
     );
 };
-
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    menuContainer: {
-        width: '100%',
-        maxWidth: 400,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 24,
-        padding: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.1,
-        shadowRadius: 20,
-        elevation: 10,
-        ...(Platform.OS === 'web' && { cursor: 'default' as any }),
-    },
-    headerMenu: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 16,
-    },
-    avatarWrapper: {
-        position: 'relative',
-    },
-    avatarGrande: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#f3f4f6',
-    },
-    editAvatarBtn: {
-        position: 'absolute',
-        bottom: -4,
-        right: -4,
-        width: 28,
-        height: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 14,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    iconoEditAvatar: {
-        width: 16,
-        height: 16,
-        resizeMode: 'contain',
-    },
-    headerTextInfo: {
-        flex: 1,
-        alignItems: 'flex-start',
-    },
-    userNameGrande: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: '#322e2b',
-        fontFamily: 'Inter_700Bold',
-        marginBottom: 4,
-    },
-    badgeRol: {
-        backgroundColor: '#f0e6e1',
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        borderRadius: 16,
-    },
-    textoBadgeRol: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: '#FF6B35',
-        fontFamily: 'Inter_600SemiBold',
-    },
-    divider: {
-        height: 1,
-        backgroundColor: '#f0e6e1',
-        marginVertical: 20,
-    },
-    infoSeccion: {
-        paddingVertical: 10,
-    },
-    saludoTexto: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#322e2b',
-        marginBottom: 8,
-    },
-    descripcionTexto: {
-        fontSize: 14,
-        color: '#605a57',
-        lineHeight: 22,
-    },
-    filaInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 8,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f7f2ef',
-    },
-    labelInfo: {
-        width: 80,
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#322e2b',
-    },
-    valorInfo: {
-        flex: 1,
-        fontSize: 14,
-        color: '#605a57',
-    },
-    cerrarMenuBtn: {
-        backgroundColor: '#FF6B35',
-        paddingVertical: 14,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    cerrarMenuTexto: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    distanciaContainer: {
-        marginTop: 16,
-        padding: 16,
-        backgroundColor: '#fef5f0',
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#FFE5D9',
-    },
-    labelDistancia: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: '#322e2b',
-    },
-    valorDistancia: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#FF6B35',
-    },
-    controlesDistancia: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-    },
-    botonMenosMas: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    textoMenosMas: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#FF6B35',
-        marginTop: -2,
-    },
-    barraProcesoContenedor: {
-        flex: 1,
-        height: 8,
-        backgroundColor: '#FFE5D9',
-        borderRadius: 4,
-        overflow: 'hidden',
-    },
-    barraProcesoFill: {
-        height: '100%',
-        backgroundColor: '#FF6B35',
-        borderRadius: 4,
-    },
-    textoDistanciaInfo: {
-        fontSize: 12,
-        color: '#7b726d',
-        marginTop: 10,
-        textAlign: 'center',
-    }
-});

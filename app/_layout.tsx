@@ -10,7 +10,7 @@ import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-rout
 import { Platform, StatusBar as RNStatusBar } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import 'react-native-reanimated';
 
 
@@ -36,25 +36,20 @@ export default function RootLayout() {
     Roboto_700Bold,
   });
 
-  useEffect(() => {
-    if (letrasCargadas && rootNavigationState?.key) {
-      SplashScreen.hideAsync(); // Ocultala carga cuando las letras estan listas
+  const isInAuthGroup = useMemo(() => segments[0] === 'login' || segments[0] === 'registro', [segments]);
 
-      // Controlar el inicio de sesion
-      const isInAuthGroup = segments[0] === 'login' || segments[0] === 'registro';
-      if (!userName && !isInAuthGroup) {
-        // Redirigir siempre a login si no tienen nombre guardado
-        setTimeout(() => router.replace('/login'), 10);
-      } else if (userName && isInAuthGroup) {
-        // Si se han logueado, redirigilos a su lugar de inicio según rol
-        if (rol === 'negocio') {
-            setTimeout(() => router.replace('/(negocio)' as any), 10);
-        } else {
-            setTimeout(() => router.replace('/(tabs)' as any), 10);
-        }
-      }
+  useEffect(() => {
+    if (!letrasCargadas || !rootNavigationState?.key) return;
+
+    SplashScreen.hideAsync();
+
+    if (!userName && !isInAuthGroup) {
+      setTimeout(() => router.replace('/login'), 0);
+    } else if (userName && isInAuthGroup) {
+      const target = rol === 'negocio' ? '/(negocio)' : '/(tabs)';
+      setTimeout(() => router.replace(target as any), 0);
     }
-  }, [letrasCargadas, rootNavigationState?.key, userName, rol, segments, router]);
+  }, [letrasCargadas, rootNavigationState?.key, userName, rol, isInAuthGroup, router]);
 
   useEffect(() => {
     // Forzar ocultar la barra de estado del sistema (hora, bateria, etc) al arrancar

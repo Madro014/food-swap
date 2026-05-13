@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import ListaMatchesVista from '@Global/funcionalidades/matches/ListaMatchesVista';
+import { styles } from '@Global/compartido/estilos/explore.styles';
 
 export default function MatchesTabScreen() {
   return (
@@ -9,10 +10,3 @@ export default function MatchesTabScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6'
-  }
-});

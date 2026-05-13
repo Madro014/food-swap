@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { LoginVista } from '@Global/funcionalidades/auth/LoginVista';
+import { styles } from '@Global/funcionalidades/auth/login.styles';
 
 export default function LoginScreen() {
     return (
@@ -9,9 +10,3 @@ export default function LoginScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    }
-});

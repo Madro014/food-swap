@@ -18,7 +18,7 @@ export const NavBarNegocio = ({ onPublicarPress }: NavBarNegocioProps) => {
         return 'misPlatos'; // Default
     };
 
-    const [activeTab, setActiveTab] = useState<'misPlatos' | 'publicar'>(getActiveTab());
+    const [activeTab, setActiveTab] = useState<'misPlatos' | 'publicar'>(() => getActiveTab());
 
     // Sincronizar con cambios de ruta (por ejemplo, si navegan con el botón atrás)
     useEffect(() => {

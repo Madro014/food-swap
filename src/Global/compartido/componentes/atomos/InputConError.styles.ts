@@ -1,8 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
     group: {
-        marginBottom: 8, // Reduced from 12
+        marginBottom: 8,
+
     },
     label: {
         fontSize: 11,
@@ -20,32 +21,26 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: 14,
-        paddingHorizontal: 14,
+        paddingHorizontal: 16,
         borderWidth: 1.5,
         borderColor: '#F0EBE7',
+        height: Platform.OS === 'web' ? 56 : 48,
     },
     inputContainerFocused: {
         borderColor: '#FF6B35',
-        backgroundColor: '#FFFCFA',
-        shadowColor: '#FF6B35',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.08,
-        shadowRadius: 6,
-        elevation: 2,
     },
     leftIconContainer: {
-        marginRight: 4,
+        marginRight: 8,
     },
     input: {
         flex: 1,
-        paddingVertical: 11,
-        fontSize: 14,
+        height: '100%',
+        fontSize: Platform.OS === 'web' ? 16 : 14,
         fontFamily: 'Roboto_400Regular',
         color: '#322e2b',
-        borderWidth: 0,
+        outlineStyle: 'none' as any, // Remove focus ring on web
     },
     inputError: {
-        borderWidth: 1.5,
         borderColor: '#D93545',
     },
     errorText: {

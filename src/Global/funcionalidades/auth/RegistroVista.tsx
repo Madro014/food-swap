@@ -1,6 +1,7 @@
 import { TransicionComidaRef } from '@Global/compartido/componentes/TransicionComida';
 import { useRouter } from 'expo-router';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
+import { Alert } from 'react-native';
 import { pedirPermisosUbicacion } from '@api/UbicacionServicio';
 import { FormularioRegistro } from './componentes/organismos/FormularioRegistro';
 import { PlantillaAuth } from './componentes/plantillas/PlantillaAuth';
@@ -21,8 +22,20 @@ export const RegistroVista = () => {
         let ok = false;
 
         if (rol === 'negocio') {
-            // Intentar obtener ubicación GPS — si falla, usar 0,0 como placeholder
+            // Intentar obtener ubicación GPS
             const ubi = await pedirPermisosUbicacion();
+            
+            if (ubi) {
+                Alert.alert(
+                    "Ubicación Detectada",
+                    `Latitud: ${ubi.latitud}\nLongitud: ${ubi.longitud}`,
+                    [{ text: "OK" }]
+                );
+                console.log("GPS Detectado:", ubi);
+            } else {
+                Alert.alert("Error de GPS", "No pudimos obtener tu ubicación. Se usará 0,0.");
+            }
+
             ok = await registroNegocio(
                 { nombreEmpresa: data.nombre, email: data.email, contrasena: data.password, telefono: data.telefono },
                 { latitud: ubi?.latitud ?? 0, longitud: ubi?.longitud ?? 0, direccionFisica: data.direccion },

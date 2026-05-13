@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo, useRef } from 'react';
 import { Platform, useWindowDimensions } from 'react-native';
 import { PlantillaAuthWeb } from '@Web/auth/PlantillaAuth.Web';
 import { PlantillaAuthApp } from '@Movil/auth/PlantillaAuth.App';
@@ -12,10 +12,15 @@ interface PlantillaAuthProps {
 
 export const PlantillaAuth = forwardRef<TransicionComidaRef, PlantillaAuthProps>(
     (props, ref) => {
-        const { width } = useWindowDimensions();
-        const isDesktop = width > 768;
+        const { width: SCREEN_WIDTH } = useWindowDimensions();
+        // Guardamos el valor inicial para evitar que el teclado en Android
+        // cambie el layout y reinicie el formulario.
+        const initialWidthRef = useRef(SCREEN_WIDTH);
+        const isDesktop = useMemo(() => {
+            return Platform.OS === 'web' || initialWidthRef.current > 768;
+        }, []);
 
-        if (Platform.OS === 'web' || isDesktop) {
+        if (isDesktop) {
             return <PlantillaAuthWeb {...props} ref={ref} />;
         }
 

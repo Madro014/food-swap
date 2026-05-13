@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { RegistroVista } from '@Global/funcionalidades/auth/RegistroVista';
+import { styles } from '@Global/funcionalidades/auth/registro.styles';
 
 export default function RegistroScreen() {
     return (
@@ -9,9 +10,3 @@ export default function RegistroScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    }
-});
