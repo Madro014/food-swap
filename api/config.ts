@@ -10,7 +10,7 @@ import { Platform } from 'react-native';
  */
 
 /** Cambia a true sólo si quieres apuntar al backend local en tu máquina */
-const USAR_LOCAL = true;
+const USAR_LOCAL = false;
 
 const LOCAL_URL =
     Platform.OS === 'android'

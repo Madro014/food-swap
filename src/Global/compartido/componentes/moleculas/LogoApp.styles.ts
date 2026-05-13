@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
         width: 140,
         height: 140,
         marginBottom: 16,
+        tintColor: '#FF6B35',
     },
     subtitulo: {
         fontSize: 18,

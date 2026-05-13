@@ -1,4 +1,3 @@
-import { FondoAnimadoComida } from '@Global/compartido/componentes/FondoAnimadoComida';
 import { TransicionComida, TransicionComidaRef } from '@Global/compartido/componentes/TransicionComida';
 import animacionConfig from '@Global/compartido/config/animacion.json';
 import { StatusBar } from 'expo-status-bar';
@@ -13,7 +12,6 @@ interface PlantillaAuthProps {
     esRegistro?: boolean;
 }
 
-import logoPremium from '../../../assets/images/logo_premium.png';
 
 export const PlantillaAuthWeb = forwardRef<TransicionComidaRef, PlantillaAuthProps>(
     ({ children, esRegistro = false }, ref) => {
@@ -57,8 +55,8 @@ export const PlantillaAuthWeb = forwardRef<TransicionComidaRef, PlantillaAuthPro
                         <View style={styles.webBrandOverlay} />
                         <View style={styles.webBrandTextContainer}>
                             <Image
-                                source={logoPremium}
-                                style={styles.webLogo}
+                                source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772550710/foodmatch_osnrsz.png' }}
+                                style={[styles.webLogo, { tintColor: '#FF6B35' }]}
                                 resizeMode="contain"
                             />
                             <Text style={styles.webHeadline}>Comparte & Disfruta</Text>
