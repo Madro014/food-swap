@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View, Image, Platform, Pressable } from 'react-native';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import * as ImagePicker from 'expo-image-picker';
@@ -12,12 +12,13 @@ interface MenuPerfilProps {
 
 export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
     const { userName, userAvatar, rol, email, telefono, direccion, updateAvatar, alcanceKm, setAlcanceKm, fetchPerfil, logout } = useAuthStore();
+    const prevVisibleRef = React.useRef(false);
 
-    useEffect(() => {
-        if (visible) {
-            fetchPerfil();
-        }
-    }, [visible, fetchPerfil]);
+    // Cargar perfil cuando el modal se abre (no en cada render)
+    if (visible && !prevVisibleRef.current) {
+        fetchPerfil();
+    }
+    prevVisibleRef.current = visible;
 
     const cambiarAvatar = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -166,11 +167,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 24,
         padding: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.1,
-        shadowRadius: 20,
-        elevation: 10,
+        boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
         ...(Platform.OS === 'web' && { cursor: 'default' as any }),
     },
     headerMenu: {
@@ -197,11 +194,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: 14,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
     },
     iconoEditAvatar: {
         width: 16,
@@ -309,11 +302,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
     },
     textoMenosMas: {
         fontSize: 18,

@@ -2,9 +2,45 @@ import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from './FormularioPlato.styles';
+
+interface FormState {
+    nombreRestaurante: string;
+    nombrePlato: string;
+    precio: string;
+    imagenUri: string | null;
+    descripcion: string;
+    errores: {
+        nombreRestaurante: string;
+        nombrePlato: string;
+        precio: string;
+        imagenUri: string;
+        descripcion: string;
+    };
+}
+
+type FormAction =
+    | { type: 'SET_FIELD'; field: keyof Omit<FormState, 'errores'>; value: any }
+    | { type: 'SET_ERROR'; field: string; value: string }
+    | { type: 'SET_ERRORS'; errores: FormState['errores'] }
+    | { type: 'CLEAR_FIELD_ERROR'; field: string };
+
+function formReducer(state: FormState, action: FormAction): FormState {
+    switch (action.type) {
+        case 'SET_FIELD':
+            return { ...state, [action.field]: action.value, errores: { ...state.errores, [action.field]: '' } };
+        case 'SET_ERROR':
+            return { ...state, errores: { ...state.errores, [action.field]: action.value } };
+        case 'SET_ERRORS':
+            return { ...state, errores: action.errores };
+        case 'CLEAR_FIELD_ERROR':
+            return { ...state, errores: { ...state.errores, [action.field]: '' } };
+        default:
+            return state;
+    }
+}
 
 interface FormularioPlatoProps {
     nombreRestauranteInicial?: string;
@@ -20,20 +56,22 @@ interface FormularioPlatoProps {
 }
 
 export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, alCancelar, cargando = false }: FormularioPlatoProps) => {
-    const [nombreRestaurante, setNombreRestaurante] = useState(nombreRestauranteInicial);
-    const [nombrePlato, setNombrePlato] = useState('');
-    const [precio, setPrecio] = useState('');
-    const [imagenUri, setImagenUri] = useState<string | null>(null);
-    const [descripcion, setDescripcion] = useState('');
-    
-    // Estado de errores
-    const [errores, setErrores] = useState({
-        nombreRestaurante: '',
+    const [state, dispatch] = useReducer(formReducer, {
+        nombreRestaurante: nombreRestauranteInicial,
         nombrePlato: '',
         precio: '',
-        imagenUri: '',
-        descripcion: ''
+        imagenUri: null,
+        descripcion: '',
+        errores: {
+            nombreRestaurante: '',
+            nombrePlato: '',
+            precio: '',
+            imagenUri: '',
+            descripcion: ''
+        }
     });
+
+    const { nombreRestaurante, nombrePlato, precio, imagenUri, descripcion, errores } = state;
 
     const seleccionarImagen = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -44,8 +82,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
         });
 
         if (!result.canceled) {
-            setImagenUri(result.assets[0].uri);
-            setErrores(prev => ({ ...prev, imagenUri: '' }));
+            dispatch({ type: 'SET_FIELD', field: 'imagenUri', value: result.assets[0].uri });
         }
     };
 
@@ -58,7 +95,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
             descripcion: !descripcion ? 'Agrega una descripción para tentar a tus clientes' : ''
         };
 
-        setErrores(nuevosErrores);
+        dispatch({ type: 'SET_ERRORS', errores: nuevosErrores });
         return !Object.values(nuevosErrores).some(error => error !== '');
     };
 
@@ -94,7 +131,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                 label="Nombre del Restaurante"
                 placeholder="madrinhos pizza"
                 value={nombreRestaurante}
-                onChangeText={(v) => { setNombreRestaurante(v); setErrores(p => ({ ...p, nombreRestaurante: '' })); }}
+                onChangeText={(v) => dispatch({ type: 'SET_FIELD', field: 'nombreRestaurante', value: v })}
                 error={errores.nombreRestaurante}
                 leftIcon={<IconSymbol name="house.fill" size={18} color="#A89E96" />}
             />
@@ -105,7 +142,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                         label="Nombre del Plato"
                         placeholder="Ej. Pizza de Queso Cabrales"
                         value={nombrePlato}
-                        onChangeText={(v) => { setNombrePlato(v); setErrores(p => ({ ...p, nombrePlato: '' })); }}
+                        onChangeText={(v) => dispatch({ type: 'SET_FIELD', field: 'nombrePlato', value: v })}
                         error={errores.nombrePlato}
                         leftIcon={<IconSymbol name="fork.knife" size={18} color="#A89E96" />}
                     />
@@ -116,7 +153,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                         label="Precio"
                         placeholder="0.00"
                         value={precio}
-                        onChangeText={(v) => { setPrecio(v); setErrores(p => ({ ...p, precio: '' })); }}
+                        onChangeText={(v) => dispatch({ type: 'SET_FIELD', field: 'precio', value: v })}
                         keyboardType="numeric"
                         error={errores.precio}
                         leftIcon={<IconSymbol name="dollarsign" size={18} color="#A89E96" />}
@@ -166,7 +203,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
                     multiline
                     numberOfLines={4}
                     value={descripcion}
-                    onChangeText={(v) => { setDescripcion(v); setErrores(p => ({ ...p, descripcion: '' })); }}
+                    onChangeText={(v) => dispatch({ type: 'SET_FIELD', field: 'descripcion', value: v })}
                     maxLength={500}
                 />
                 <Text style={styles.contadorCaracteres}>{descripcion.length} / 500</Text>

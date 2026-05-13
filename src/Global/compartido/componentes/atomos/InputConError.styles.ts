@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     group: {
-        marginBottom: 8, // Reduced from 12
+        marginBottom: 8,
+
     },
     label: {
         fontSize: 11,
@@ -23,29 +24,23 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 14,
         borderWidth: 1.5,
         borderColor: '#F0EBE7',
+        height: 48, // Altura fija para evitar saltos de layout
     },
     inputContainerFocused: {
         borderColor: '#FF6B35',
-        backgroundColor: '#FFFCFA',
-        shadowColor: '#FF6B35',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.08,
-        shadowRadius: 6,
-        elevation: 2,
+        // Eliminamos sombras y cambios de fondo que pueden causar pérdida de foco en Android
     },
     leftIconContainer: {
         marginRight: 4,
     },
     input: {
         flex: 1,
-        paddingVertical: 11,
+        height: '100%',
         fontSize: 14,
         fontFamily: 'Roboto_400Regular',
         color: '#322e2b',
-        borderWidth: 0,
     },
     inputError: {
-        borderWidth: 1.5,
         borderColor: '#D93545',
     },
     errorText: {

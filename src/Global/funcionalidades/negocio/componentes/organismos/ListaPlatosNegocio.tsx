@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { styles } from '../../dashboard.styles';
 import { TarjetaPlatoNegocio } from '../moleculas/TarjetaPlatoNegocio';
@@ -15,7 +15,18 @@ interface ListaPlatosNegocioProps {
     onEliminarPlato?: (id: string) => void;
 }
 
-export const ListaPlatosNegocio = ({ platosNegocio = [], onEliminarPlato }: ListaPlatosNegocioProps) => {
+const EMPTY_PLATOS: PlatoDashboard[] = [];
+
+export const ListaPlatosNegocio = ({ platosNegocio = EMPTY_PLATOS, onEliminarPlato }: ListaPlatosNegocioProps) => {
+    const renderItem = useCallback(({ item }: { item: PlatoDashboard }) => (
+        <TarjetaPlatoNegocio 
+            id={item.id}
+            nombreRestaurante={item.nombreRestaurante} 
+            nombrePlato={item.nombrePlato} 
+            imagenUri={item.imagenUri} 
+            onEliminar={onEliminarPlato}
+        />
+    ), [onEliminarPlato]);
     return (
         <View style={styles.contenedorContenido}>
             <View style={styles.cabeceraLista}>
@@ -33,15 +44,7 @@ export const ListaPlatosNegocio = ({ platosNegocio = [], onEliminarPlato }: List
                     keyExtractor={(item) => item.id}
                     numColumns={2}
                     columnWrapperStyle={styles.columnaGrid}
-                    renderItem={({ item }) => (
-                        <TarjetaPlatoNegocio 
-                            id={item.id}
-                            nombreRestaurante={item.nombreRestaurante} 
-                            nombrePlato={item.nombrePlato} 
-                            imagenUri={item.imagenUri} 
-                            onEliminar={onEliminarPlato}
-                        />
-                    )}
+                    renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.listaPlatos}
                 />

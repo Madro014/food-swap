@@ -1,5 +1,6 @@
 // alternativa para usar MaterialIcons en Android y web.
-
+// Nota: @expo/vector-icons está deprecado. Se usa la importación directa del sub-paquete
+// mientras se migra completamente a expo-symbols (iOS) / expo-image.
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
 import { ComponentProps } from 'react';
