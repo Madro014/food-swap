@@ -33,13 +33,13 @@ export const platosService = {
                     })
                 });
                 const signatureJson = await signatureRes.json();
-                
+
                 if (!signatureJson.success || !signatureJson.data) {
                     return { success: false, message: 'No se pudo generar la firma para subir imagen', errors: signatureJson.errors };
                 }
 
                 const cloudinaryData = signatureJson.data as PresignedURLData;
-                
+
                 const formData = new FormData();
                 Object.entries(cloudinaryData.fields).forEach(([key, value]) => {
                     if (value !== undefined) {
@@ -64,11 +64,11 @@ export const platosService = {
                     method: 'POST',
                     body: formData,
                 });
-                
+
                 if (!directUploadRes.ok) {
                     return { success: false, message: 'Error directo en Cloudinary al subir imagen' };
                 }
-                
+
                 const uploadJson = (await directUploadRes.json()) as CloudinaryResponse;
                 photoUrl = uploadJson.secure_url;
             }

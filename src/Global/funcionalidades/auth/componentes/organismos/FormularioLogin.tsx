@@ -1,7 +1,8 @@
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
+import { IconSymbol } from '@Global/components/ui/icon-symbol';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, LayoutAnimation } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
 import { useAuthStore } from '../../useAuthStore';
@@ -22,6 +23,11 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
     const cargando = useAuthStore(state => state.cargando);
     const errorAuth = useAuthStore(state => state.errorAuth);
 
+    const handleRoleChange = (rol: 'cliente' | 'negocio') => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setRolSeleccionado(rol);
+    };
+
     const handleSubmit = async () => {
         if (validar()) {
             await alHacerSubmit(email, password, rolSeleccionado);
@@ -33,7 +39,7 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
             <View style={styles.selectorContenedor}>
                 <TouchableOpacity 
                     style={[styles.botonRol, rolSeleccionado === 'cliente' && styles.botonRolActivo]} 
-                    onPress={() => setRolSeleccionado('cliente')}
+                    onPress={() => handleRoleChange('cliente')}
                 >
                     <Text style={[styles.textoRol, rolSeleccionado === 'cliente' && styles.textoRolActivo]}>
                         {textosRoles.cliente}
@@ -41,7 +47,7 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.botonRol, rolSeleccionado === 'negocio' && styles.botonRolActivo]} 
-                    onPress={() => setRolSeleccionado('negocio')}
+                    onPress={() => handleRoleChange('negocio')}
                 >
                     <Text style={[styles.textoRol, rolSeleccionado === 'negocio' && styles.textoRolActivo]}>
                         {textosRoles.negocio}
@@ -57,6 +63,7 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
                 autoCapitalize="none"
                 autoCorrect={false}
                 error={errores.email}
+                leftIcon={<IconSymbol name="envelope.fill" size={18} color="#A8A39F" />}
             />
             <InputConError
                 label={textos.labelPassword}
@@ -65,6 +72,7 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
                 onChangeText={(v) => { setPassword(v); limpiarError('password'); }}
                 secureTextEntry
                 error={errores.password}
+                leftIcon={<IconSymbol name="lock.fill" size={18} color="#A8A39F" />}
             />
             {errorAuth && (
                 <Text style={styles.textoError}>{errorAuth}</Text>

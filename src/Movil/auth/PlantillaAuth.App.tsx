@@ -17,7 +17,7 @@ interface PlantillaAuthProps {
 export const PlantillaAuthApp = forwardRef<TransicionComidaRef, PlantillaAuthProps>(
     ({ subtituloLogo, children }, ref) => {
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#fef5f0' }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#fdf2e9' }}>
                 <StatusBar hidden={true} />
                 <FondoAnimadoComida />
                 

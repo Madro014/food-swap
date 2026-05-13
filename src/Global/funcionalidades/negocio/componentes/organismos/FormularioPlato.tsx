@@ -44,6 +44,12 @@ function formReducer(state: FormState, action: FormAction): FormState {
 
 interface FormularioPlatoProps {
     nombreRestauranteInicial?: string;
+    platoInicial?: {
+        nombrePlato: string;
+        precio: number;
+        imagenUri: string;
+        descripcion: string;
+    };
     alHacerSubmit: (data: {
         nombreRestaurante: string;
         nombrePlato: string;
@@ -55,13 +61,13 @@ interface FormularioPlatoProps {
     cargando?: boolean;
 }
 
-export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, alCancelar, cargando = false }: FormularioPlatoProps) => {
+export const FormularioPlato = ({ nombreRestauranteInicial = '', platoInicial, alHacerSubmit, alCancelar, cargando = false }: FormularioPlatoProps) => {
     const [state, dispatch] = useReducer(formReducer, {
         nombreRestaurante: nombreRestauranteInicial,
-        nombrePlato: '',
-        precio: '',
-        imagenUri: null,
-        descripcion: '',
+        nombrePlato: platoInicial?.nombrePlato || '',
+        precio: platoInicial?.precio.toString() || '',
+        imagenUri: platoInicial?.imagenUri || null,
+        descripcion: platoInicial?.descripcion || '',
         errores: {
             nombreRestaurante: '',
             nombrePlato: '',
@@ -118,10 +124,10 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
             {/* ── Header decorativo ── */}
             <View style={styles.headerDecoativo}>
                 <View style={styles.emojiBadge}>
-                    <Text style={styles.emojiTexto}>🍳</Text>
+                    <Text style={styles.emojiTexto}>{platoInicial ? '📝' : '🍳'}</Text>
                 </View>
-                <Text style={styles.titulo}>Nuevo Manjar</Text>
-                <Text style={styles.subtitulo}>Comparte tu mejor creación con la comunidad</Text>
+                <Text style={styles.titulo}>{platoInicial ? 'Editar Manjar' : 'Nuevo Manjar'}</Text>
+                <Text style={styles.subtitulo}>{platoInicial ? 'Actualiza los detalles de tu plato' : 'Comparte tu mejor creación con la comunidad'}</Text>
             </View>
 
             <View style={styles.separador} />
@@ -215,7 +221,7 @@ export const FormularioPlato = ({ nombreRestauranteInicial = '', alHacerSubmit, 
             {/* ── Botones ── */}
             <View style={styles.botonesContenedor}>
                 <Boton
-                    titulo={cargando ? 'Subiendo...' : 'Subir Plato'}
+                    titulo={cargando ? (platoInicial ? 'Guardando...' : 'Subiendo...') : (platoInicial ? 'Guardar Cambios' : 'Subir Plato')}
                     onPress={() => { handleSubmit(); }}
                     disabled={cargando}
                 />

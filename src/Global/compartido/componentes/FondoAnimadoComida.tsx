@@ -6,7 +6,8 @@ import Animated, {
   withTiming, 
   withRepeat, 
   withSequence,
-  Easing
+  Easing,
+  FadeIn
 } from 'react-native-reanimated';
 import { styles } from './FondoAnimadoComida.styles';
 
@@ -99,7 +100,10 @@ export const FondoAnimadoComida = () => {
   }, [width, height]);
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <View 
+      style={styles.container} 
+      pointerEvents="none"
+    >
       {emojisData.map((emoji) => (
         <FloatingEmoji
           key={emoji.id}

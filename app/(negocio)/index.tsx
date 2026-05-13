@@ -20,6 +20,8 @@ interface PlatoDashboard {
     nombreRestaurante: string;
     nombrePlato: string;
     imagenUri: string | null;
+    precio: number;
+    descripcion: string;
 }
 
 export default function NegocioDashboard() {
@@ -35,6 +37,7 @@ export default function NegocioDashboard() {
     const [cargando, setCargando] = useState(true);
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [subiendo, setSubiendo] = useState(false);
+    const [platoAEditar, setPlatoAEditar] = useState<PlatoDashboard | null>(null);
 
     const cargarPlatos = useCallback(async () => {
         if (!token) return;
@@ -44,7 +47,9 @@ export default function NegocioDashboard() {
                 id: p.id,
                 nombreRestaurante: p.nombreRestaurante || userName || 'Mi Restaurante',
                 nombrePlato: p.nombrePlato,
-                imagenUri: p.imagenUri
+                imagenUri: p.imagenUri,
+                precio: p.precio || 0,
+                descripcion: p.descripcion || ''
             }));
             setPlatosNegocio(mapped.reverse());
         }
@@ -78,7 +83,7 @@ export default function NegocioDashboard() {
         }
     };
 
-    const manejarCreacionPlato = async (data: {
+    const manejarSubmitPlato = async (data: {
         nombreRestaurante: string;
         nombrePlato: string;
         precio: number;
@@ -88,23 +93,49 @@ export default function NegocioDashboard() {
         if (!token) return;
         setSubiendo(true);
         try {
-            const result = await platosService.crearPlato(
-                token,
-                data.nombrePlato,
-                data.precio,
-                data.imagenUri,
-                data.descripcion
-            );
+            let result;
+            if (platoAEditar) {
+                // Modo Edición
+                result = await platosService.editarPlato(
+                    token,
+                    platoAEditar.id,
+                    {
+                        nombre: data.nombrePlato,
+                        descripcion: data.descripcion,
+                        precio: data.precio,
+                        imagenUri: data.imagenUri
+                    }
+                );
+            } else {
+                // Modo Creación
+                result = await platosService.crearPlato(
+                    token,
+                    data.nombrePlato,
+                    data.precio,
+                    data.imagenUri,
+                    data.descripcion
+                );
+            }
+
             if (result.success) {
                 setMostrarFormulario(false);
+                setPlatoAEditar(null);
                 await cargarPlatos();
             } else {
-                Alert.alert('Error', `No se pudo crear el plato: ${result.message}`);
+                Alert.alert('Error', `No se pudo ${platoAEditar ? 'actualizar' : 'crear'} el plato: ${result.message}`);
             }
         } catch {
             Alert.alert('Error', 'Hubo un problema de conexión.');
         } finally {
             setSubiendo(false);
+        }
+    };
+
+    const abrirEdicion = (id: string) => {
+        const plato = platosNegocio.find(p => p.id === id);
+        if (plato) {
+            setPlatoAEditar(plato);
+            setMostrarFormulario(true);
         }
     };
 
@@ -124,11 +155,15 @@ export default function NegocioDashboard() {
                 <ListaPlatosNegocio
                     platosNegocio={platosNegocio}
                     onEliminarPlato={eliminarPlato}
+                    onEditarPlato={abrirEdicion}
                 />
             )}
 
             {/* ── Navbar persistente ── */}
-            <NavBarNegocio onPublicarPress={() => setMostrarFormulario(true)} />
+            <NavBarNegocio onPublicarPress={() => {
+                setPlatoAEditar(null);
+                setMostrarFormulario(true);
+            }} />
 
             {/* ── Modal del formulario ── */}
             <Modal
@@ -155,8 +190,17 @@ export default function NegocioDashboard() {
                         >
                             <FormularioPlato
                                 nombreRestauranteInicial={userName || ''}
-                                alHacerSubmit={manejarCreacionPlato}
-                                alCancelar={() => setMostrarFormulario(false)}
+                                platoInicial={platoAEditar ? {
+                                    nombrePlato: platoAEditar.nombrePlato,
+                                    precio: platoAEditar.precio,
+                                    imagenUri: platoAEditar.imagenUri || '',
+                                    descripcion: platoAEditar.descripcion
+                                } : undefined}
+                                alHacerSubmit={manejarSubmitPlato}
+                                alCancelar={() => {
+                                    setMostrarFormulario(false);
+                                    setPlatoAEditar(null);
+                                }}
                                 cargando={subiendo}
                             />
                         </ScrollView>

@@ -1,8 +1,9 @@
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
+import { IconSymbol } from '@Global/components/ui/icon-symbol';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, LayoutAnimation } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
 import { useAuthStore } from '../../useAuthStore';
@@ -34,6 +35,11 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
     const cargando = useAuthStore(state => state.cargando);
     const errorAuth = useAuthStore(state => state.errorAuth);
 
+    const handleRoleChange = (rol: 'cliente' | 'negocio') => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setRolSeleccionado(rol);
+    };
+
     const handleSubmit = async () => {
         if (validar(rolSeleccionado)) {
             await alHacerSubmit({ nombre, telefono, direccion, logo, email, password }, rolSeleccionado);
@@ -60,7 +66,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
             <View style={styles.selectorContenedor}>
                 <TouchableOpacity 
                     style={[styles.botonRol, rolSeleccionado === 'cliente' && styles.botonRolActivo]} 
-                    onPress={() => setRolSeleccionado('cliente')}
+                    onPress={() => handleRoleChange('cliente')}
                 >
                     <Text style={[styles.textoRol, rolSeleccionado === 'cliente' && styles.textoRolActivo]}>
                         {textosRoles.cliente}
@@ -68,7 +74,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.botonRol, rolSeleccionado === 'negocio' && styles.botonRolActivo]} 
-                    onPress={() => setRolSeleccionado('negocio')}
+                    onPress={() => handleRoleChange('negocio')}
                 >
                     <Text style={[styles.textoRol, rolSeleccionado === 'negocio' && styles.textoRolActivo]}>
                         {textosRoles.negocio}
@@ -81,6 +87,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 value={nombre}
                 onChangeText={(v) => { setNombre(v); limpiarError('nombre'); }}
                 error={errores.nombre}
+                leftIcon={<IconSymbol name="person.fill" size={18} color="#A8A39F" />}
             />
             
             {rolSeleccionado === 'negocio' && (
@@ -92,6 +99,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                         onChangeText={(v) => { setTelefono(v); limpiarError('telefono'); }}
                         keyboardType="phone-pad"
                         error={errores.telefono}
+                        leftIcon={<IconSymbol name="phone.fill" size={18} color="#A8A39F" />}
                     />
                     <InputConError
                         label={textos.labelDireccion}
@@ -99,6 +107,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                         value={direccion}
                         onChangeText={(v) => { setDireccion(v); limpiarError('direccion'); }}
                         error={errores.direccion}
+                        leftIcon={<IconSymbol name="map.fill" size={18} color="#A8A39F" />}
                     />
                     
                     {/* Selector de Logo Nativo */}
@@ -133,6 +142,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 autoCapitalize="none"
                 autoCorrect={false}
                 error={errores.email}
+                leftIcon={<IconSymbol name="envelope.fill" size={18} color="#A8A39F" />}
             />
             <InputConError
                 label={textos.labelPassword}
@@ -141,6 +151,7 @@ export const FormularioRegistro = ({ alHacerSubmit, alNavegarLogin }: Formulario
                 onChangeText={(v) => { setPassword(v); limpiarError('password'); }}
                 secureTextEntry
                 error={errores.password}
+                leftIcon={<IconSymbol name="lock.fill" size={18} color="#A8A39F" />}
             />
             {errorAuth && (
                 <Text style={styles.textoError}>{errorAuth}</Text>

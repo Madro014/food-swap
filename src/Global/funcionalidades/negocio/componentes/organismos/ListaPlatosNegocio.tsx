@@ -13,11 +13,12 @@ interface PlatoDashboard {
 interface ListaPlatosNegocioProps {
     platosNegocio: PlatoDashboard[];
     onEliminarPlato?: (id: string) => void;
+    onEditarPlato?: (id: string) => void;
 }
 
 const EMPTY_PLATOS: PlatoDashboard[] = [];
 
-export const ListaPlatosNegocio = ({ platosNegocio = EMPTY_PLATOS, onEliminarPlato }: ListaPlatosNegocioProps) => {
+export const ListaPlatosNegocio = ({ platosNegocio = EMPTY_PLATOS, onEliminarPlato, onEditarPlato }: ListaPlatosNegocioProps) => {
     const renderItem = useCallback(({ item }: { item: PlatoDashboard }) => (
         <TarjetaPlatoNegocio 
             id={item.id}
@@ -25,8 +26,9 @@ export const ListaPlatosNegocio = ({ platosNegocio = EMPTY_PLATOS, onEliminarPla
             nombrePlato={item.nombrePlato} 
             imagenUri={item.imagenUri} 
             onEliminar={onEliminarPlato}
+            onEdit={onEditarPlato}
         />
-    ), [onEliminarPlato]);
+    ), [onEliminarPlato, onEditarPlato]);
     return (
         <View style={styles.contenedorContenido}>
             <View style={styles.cabeceraLista}>

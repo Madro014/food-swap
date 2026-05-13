@@ -6,11 +6,13 @@ interface LogoAppProps {
     subtitulo: string;
 }
 
+import logoPremium from '../../../../../assets/images/logo_premium.png';
+
 export function LogoApp({ subtitulo }: LogoAppProps) {
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772550710/foodmatch_osnrsz.png' }}
+                source={logoPremium}
                 style={styles.image}
                 resizeMode="contain"
             />

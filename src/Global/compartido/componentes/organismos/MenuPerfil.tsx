@@ -116,9 +116,9 @@ export const MenuPerfil = ({ visible, onClose }: MenuPerfilProps) => {
                                             <Text style={styles.textoMenosMas}>-</Text>
                                         </TouchableOpacity>
                                         <View style={styles.barraProcesoContenedor}>
-                                            <View style={[styles.barraProcesoFill, { width: `${Math.min((alcanceKm / 200) * 100, 100)}%` }]} />
+                                            <View style={[styles.barraProcesoFill, { width: `${Math.min((alcanceKm / 500) * 100, 100)}%` }]} />
                                         </View>
-                                        <TouchableOpacity onPress={() => setAlcanceKm(Math.min(200, alcanceKm + 10))} style={styles.botonMenosMas}>
+                                        <TouchableOpacity onPress={() => setAlcanceKm(Math.min(500, alcanceKm + 10))} style={styles.botonMenosMas}>
                                             <Text style={styles.textoMenosMas}>+</Text>
                                         </TouchableOpacity>
                                     </View>

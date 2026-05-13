@@ -3,7 +3,7 @@ import { TransicionComida, TransicionComidaRef } from '@Global/compartido/compon
 import animacionConfig from '@Global/compartido/config/animacion.json';
 import { StatusBar } from 'expo-status-bar';
 import React, { forwardRef } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming, Easing, FadeIn, useSharedValue } from 'react-native-reanimated';
 import { styles } from '@Global/funcionalidades/auth/auth.styles';
 
@@ -12,6 +12,8 @@ interface PlantillaAuthProps {
     children: React.ReactNode;
     esRegistro?: boolean;
 }
+
+import logoPremium from '../../../assets/images/logo_premium.png';
 
 export const PlantillaAuthWeb = forwardRef<TransicionComidaRef, PlantillaAuthProps>(
     ({ children, esRegistro = false }, ref) => {
@@ -40,17 +42,22 @@ export const PlantillaAuthWeb = forwardRef<TransicionComidaRef, PlantillaAuthPro
             bottom: 0
         }));
 
+        const bgImageUrl = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop';
+
         return (
             <View style={[styles.container, styles.containerWeb]}>
                 <StatusBar hidden={true} />
                 <View style={{ flex: 1 }}>
                     <Animated.View style={[styles.webBrandSide, brandAnimatedStyle]}>
-                        <View style={styles.webBrandSideBackground}>
-                           <FondoAnimadoComida />
-                        </View>
+                        <Image 
+                            source={{ uri: bgImageUrl }} 
+                            style={[StyleSheet.absoluteFill, { opacity: 0.6 }]} 
+                            resizeMode="cover"
+                        />
+                        <View style={styles.webBrandOverlay} />
                         <View style={styles.webBrandTextContainer}>
                             <Image
-                                source={{ uri: 'https://res.cloudinary.com/dzdgdqoap/image/upload/v1772550710/foodmatch_osnrsz.png' }}
+                                source={logoPremium}
                                 style={styles.webLogo}
                                 resizeMode="contain"
                             />

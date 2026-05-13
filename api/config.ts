@@ -10,12 +10,12 @@ import { Platform } from 'react-native';
  */
 
 /** Cambia a true sólo si quieres apuntar al backend local en tu máquina */
-const USAR_LOCAL = false;
+const USAR_LOCAL = true;
 
 const LOCAL_URL =
     Platform.OS === 'android'
         ? 'http://10.0.2.2:8080/api/v1'   // Emulador Android
-        : 'http://localhost:8080/api/v1';  // Web / iOS Simulator
+        : 'http://192.168.1.62:8080/api/v1';  // Local IP (192.168.1.62) - Web / Simulator / Real Device
 
 const PROD_URL = 'https://swap-service-production.up.railway.app/api/v1';
 

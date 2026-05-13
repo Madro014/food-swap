@@ -32,7 +32,7 @@ export function usePlatos() {
                 const sesionRes = await geoService.obtenerSesionActiva(token);
                 let curSessionId: string | null = null;
                 
-                if (sesionRes.success && sesionRes.data) {
+                if (sesionRes.success && sesionRes.data && sesionRes.data.radius_km === alcanceKm) {
                     curSessionId = sesionRes.data.session_id;
                 } else {
                     const nuevaSesion = await geoService.iniciarSesionSwipe(token, lat, lon, alcanceKm || 10);
@@ -52,7 +52,8 @@ export function usePlatos() {
                 const dishesRes = await geoService.obtenerPlatosCercanos(token, curSessionId);
                 
                 if (dishesRes.success && dishesRes.data) {
-                    const lista: PlatoType[] = dishesRes.data.data.dishes.map((d: any) => ({
+                    const rawDishes = dishesRes.data.data?.dishes || [];
+                    const lista: PlatoType[] = rawDishes.map((d: any) => ({
                         id: d.id,
                         nombre: d.name,
                         restaurante: d.company?.name || 'Restaurante Local',
