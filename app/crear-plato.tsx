@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, Alert, StyleSheet } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
 import { platosService } from '@api/platosService';
 import { FormularioPlato } from '@Global/funcionalidades/negocio/componentes/organismos/FormularioPlato';
 import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
+import { styles } from '@Global/funcionalidades/negocio/crearPlato.styles';
 
 export default function PaginaCrearPlato() {
     const router = useRouter();
@@ -86,17 +87,3 @@ export default function PaginaCrearPlato() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: '#FF7E40', 
-    },
-    scrollContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 12,
-        paddingBottom: 24,
-    }
-});

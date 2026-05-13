@@ -20,7 +20,8 @@
       "output": "static"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@react-native-vector-icons/material-icons"
     ],
     "experiments": {
       "typedRoutes": true

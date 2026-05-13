@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import VistaDePlatos from '@Global/funcionalidades/platos/PlatosVista';
+import { estilo } from '@Global/compartido/estilos/tabsIndex.styles';
 
 export default function HomeScreen() {
   return (
@@ -10,9 +10,3 @@ export default function HomeScreen() {
     </GestureHandlerRootView>
   );
 }
-
-const estilo = StyleSheet.create({
-  completo: {
-    flex: 1, 
-  },
-});

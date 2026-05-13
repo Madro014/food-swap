@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
     group: {
@@ -21,24 +21,24 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: 14,
-        paddingHorizontal: 14,
+        paddingHorizontal: 16,
         borderWidth: 1.5,
         borderColor: '#F0EBE7',
-        height: 48, // Altura fija para evitar saltos de layout
+        height: Platform.OS === 'web' ? 56 : 48,
     },
     inputContainerFocused: {
         borderColor: '#FF6B35',
-        // Eliminamos sombras y cambios de fondo que pueden causar pérdida de foco en Android
     },
     leftIconContainer: {
-        marginRight: 4,
+        marginRight: 8,
     },
     input: {
         flex: 1,
         height: '100%',
-        fontSize: 14,
+        fontSize: Platform.OS === 'web' ? 16 : 14,
         fontFamily: 'Roboto_400Regular',
         color: '#322e2b',
+        outlineStyle: 'none' as any, // Remove focus ring on web
     },
     inputError: {
         borderColor: '#D93545',

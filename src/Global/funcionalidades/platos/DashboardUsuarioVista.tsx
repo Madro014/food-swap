@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, FlatList, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
 import { useAuthStore } from '../auth/useAuthStore';
@@ -10,11 +10,38 @@ import { useRouter } from 'expo-router';
 import { styles } from './DashboardUsuario.styles';
 import { IconSymbol } from '@Global/components/ui/icon-symbol';
 
+type State = {
+    platos: Plato[];
+    cargando: boolean;
+};
+
+type Action = 
+    | { type: 'INICIAR_CARGA' }
+    | { type: 'SET_PLATOS'; payload: Plato[] }
+    | { type: 'ERROR_CARGA' };
+
+const initialState: State = {
+    platos: [],
+    cargando: true,
+};
+
+function dashboardReducer(state: State, action: Action): State {
+    switch (action.type) {
+        case 'INICIAR_CARGA':
+            return { ...state, cargando: true };
+        case 'SET_PLATOS':
+            return { ...state, platos: action.payload, cargando: false };
+        case 'ERROR_CARGA':
+            return { ...state, cargando: false };
+        default:
+            return state;
+    }
+}
+
 export default function DashboardUsuarioVista() {
     const { userName, userAvatar, logout, token } = useAuthStore();
     const router = useRouter();
-    const [platos, setPlatos] = useState<Plato[]>([]);
-    const [cargando, setCargando] = useState(true);
+    const [state, dispatch] = useReducer(dashboardReducer, initialState);
     const [categoriaActiva, setCategoriaActiva] = useState('Todos');
 
     const categorias = ['Todos', 'Populares', 'Cerca de ti', 'Promociones', 'Desayunos'];
@@ -22,7 +49,7 @@ export default function DashboardUsuarioVista() {
     useEffect(() => {
         const fetchPlatos = async () => {
             if (!token) {
-                setCargando(false);
+                dispatch({ type: 'ERROR_CARGA' });
                 return;
             }
 
@@ -56,24 +83,27 @@ export default function DashboardUsuarioVista() {
                             descripcion: d.description || '',
                             activo: true,
                         }));
-                        setPlatos(platosMapeados);
+                        dispatch({ type: 'SET_PLATOS', payload: platosMapeados });
                     } else {
                         // Fallback a platos generales si no hay cercanos
                         const generalRes = await platosService.listarPlatosActivos(token);
                         if (generalRes.success && generalRes.data) {
-                            setPlatos(generalRes.data);
+                            dispatch({ type: 'SET_PLATOS', payload: generalRes.data });
+                        } else {
+                            dispatch({ type: 'ERROR_CARGA' });
                         }
                     }
                 } else {
                     const generalRes = await platosService.listarPlatosActivos(token);
                     if (generalRes.success && generalRes.data) {
-                        setPlatos(generalRes.data);
+                        dispatch({ type: 'SET_PLATOS', payload: generalRes.data });
+                    } else {
+                        dispatch({ type: 'ERROR_CARGA' });
                     }
                 }
             } catch (error) {
                 console.error("Error al cargar platos en dashboard:", error);
-            } finally {
-                setCargando(false);
+                dispatch({ type: 'ERROR_CARGA' });
             }
         };
         fetchPlatos();
@@ -120,7 +150,7 @@ export default function DashboardUsuarioVista() {
         </TouchableOpacity>
     );
 
-    if (cargando) {
+    if (state.cargando) {
         return (
             <View style={styles.loading}>
                 <ActivityIndicator size="large" color="#FF6B35" />
@@ -163,7 +193,7 @@ export default function DashboardUsuarioVista() {
 
                 <View style={styles.mainSection}>
                     {/* Featured Item (Solo si hay platos) */}
-                    {platos.length > 0 && (
+                    {state.platos.length > 0 && (
                         <View style={styles.featuredCard}>
                             <View style={styles.featuredInfo}>
                                 <View style={styles.featuredBadge}>
@@ -188,7 +218,7 @@ export default function DashboardUsuarioVista() {
                         </TouchableOpacity>
                     </View>
 
-                    {platos.length === 0 ? (
+                    {state.platos.length === 0 ? (
                         <View style={styles.emptyContainer}>
                             <Text style={styles.emptyIcon}>🥺</Text>
                             <Text style={styles.emptyText}>Ciudad sin platos hoy</Text>
@@ -196,7 +226,7 @@ export default function DashboardUsuarioVista() {
                         </View>
                     ) : (
                         <FlatList
-                            data={platos}
+                            data={state.platos}
                             renderItem={renderTarjetaPlato}
                             keyExtractor={(item) => item.id}
                             numColumns={2}

@@ -1,11 +1,12 @@
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { InputConError } from '@Global/compartido/componentes/atomos/InputConError';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { TEXTOS_AUTH } from '../../constantes/textos';
 import { useAuthForm } from '../../useAuthForm';
 import { useAuthStore } from '../../useAuthStore';
 import { EnlaceNavegacion } from '../moleculas/EnlaceNavegacion';
+import { styles } from './FormularioLogin.styles';
 
 interface FormularioLoginProps {
     alHacerSubmit: (email: string, password: string, rol: 'cliente' | 'negocio') => Promise<void>;
@@ -77,42 +78,3 @@ export const FormularioLogin = ({ alHacerSubmit, alNavegarRegistro }: Formulario
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    selectorContenedor: {
-        flexDirection: 'row',
-        marginBottom: 20,
-        backgroundColor: '#f0e6e1',
-        borderRadius: 9999,
-        padding: 4,
-    },
-    botonRol: {
-        flex: 1,
-        paddingVertical: 10,
-        alignItems: 'center',
-        borderRadius: 9999,
-    },
-    botonRolActivo: {
-        backgroundColor: '#ffffff',
-        shadowColor: '#322e2b',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    textoRol: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: '#605a57',
-    },
-    textoRolActivo: {
-        color: '#322e2b',
-        fontWeight: 'bold',
-    },
-    textoError: {
-        color: '#c0392b',
-        fontSize: 13,
-        marginBottom: 8,
-        textAlign: 'center',
-    },
-});

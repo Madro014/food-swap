@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         paddingHorizontal: 20,
-        paddingTop: 12, // Reduced from 24
-        paddingBottom: 24, // Reduced from 40
+        paddingTop: 12,
+        paddingBottom: 24,
     }
 });
