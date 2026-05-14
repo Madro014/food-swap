@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity, Platform, useWindowDimensions } from 'react-native';
 import TarjetaDeComida from '../TarjetaTinder';
 import { PlatoType } from '@Global/funcionalidades/matches/useMatchesStore';
 import { styles } from './PilaDeCartas.styles';
@@ -21,6 +21,7 @@ interface PilaDeCartasProps {
 }
 
 export function PilaDeCartas({ platos, cargando, onAceptar, onRechazar, limiteAlcanzado }: PilaDeCartasProps) {
+    const { height: windowHeight, width: windowWidth } = useWindowDimensions();
     const scale = useSharedValue(1);
 
     useEffect(() => {
@@ -67,9 +68,14 @@ export function PilaDeCartas({ platos, cargando, onAceptar, onRechazar, limiteAl
     // Renderizar hasta 3 cartas para dar profundidad
     const platosVisibles = platos.slice(0, 3);
 
+    const isMobileWeb = Platform.OS === 'web' && windowWidth < 500;
+    
+    // Altura dinámica para evitar solapamientos en pantallas pequeñas
+    const containerHeight = isMobileWeb ? windowHeight * 0.52 : (Platform.OS === 'web' ? 580 : 520);
+
     return (
         <View style={styles.stack}>
-            <View style={styles.cardsContainer}>
+            <View style={[styles.cardsContainer, { height: containerHeight }]}>
                 {platosVisibles.map((plato, index) => {
                     const esActiva = index === 0;
                     

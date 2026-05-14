@@ -14,20 +14,18 @@ export const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         width: '50%',
-        backgroundColor: '#FF6B35', // Deep vibrant orange
+        backgroundColor: '#FF6B35',
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
     },
-    webBrandSideBackground: {
+    webBrandSideMobile: {
+        height: '30%',
+        width: '100%',
         position: 'absolute',
         top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        opacity: 0.2, 
+        opacity: 1,
     },
-    // Overlay to make text pop against background
     webBrandOverlay: {
         position: 'absolute',
         top: 0,
@@ -36,6 +34,9 @@ export const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'rgba(0,0,0,0.4)',
     },
+    webBrandOverlayMobile: {
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
     webBrandTextContainer: {
         padding: 40,
         width: '100%',
@@ -43,12 +44,24 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-start',
         zIndex: 10,
     },
+    webBrandTextContainerMobile: {
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+    },
     webLogo: {
         width: '80%',
         maxWidth: 320,
         height: undefined,
         aspectRatio: 1,
         marginBottom: 40,
+        tintColor: '#FF6B35',
+    },
+    webLogoMobile: {
+        width: 80,
+        height: 80,
+        marginBottom: 15,
     },
     webHeadline: {
         fontSize: Platform.OS === 'web' ? 72 : 40,
@@ -57,6 +70,12 @@ export const styles = StyleSheet.create({
         marginBottom: 24,
         lineHeight: Platform.OS === 'web' ? 82 : 48,
         letterSpacing: -2,
+    },
+    webHeadlineMobile: {
+        fontSize: 32,
+        lineHeight: 38,
+        textAlign: 'center',
+        marginBottom: 10,
     },
     webSubHeadline: {
         fontSize: 24,
@@ -82,12 +101,16 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    contentInnerMobile: {
+    contentWebMobile: {
+        top: '30%',
         width: '100%',
-        marginBottom: 40,
-        alignItems: 'center',
+        height: '70%',
+        position: 'absolute',
+        bottom: 0,
+        backgroundColor: '#ffffff',
+        paddingHorizontal: 20,
+        paddingTop: 30,
     },
-    // Glassmorphism Premium Form Container
     formContainer: {
         backgroundColor: Platform.OS === 'web' ? '#ffffff' : 'rgba(255, 255, 255, 0.95)',
         borderRadius: 40,
@@ -112,9 +135,40 @@ export const styles = StyleSheet.create({
     formContainerWeb: {
         width: '85%',
         maxWidth: 520,
-        padding: 56, // More breathing room
+        padding: 56,
         borderRadius: 40,
         backgroundColor: '#ffffff',
+    },
+    formContainerWebMobile: {
+        width: '100%',
+        padding: 25,
+        elevation: 0,
+        boxShadow: 'none',
+    },
+    formHeader: {
+        marginBottom: 30,
+        alignItems: 'center',
+    },
+    formHeaderMobile: {
+        marginBottom: 20,
+    },
+    formTitle: {
+        fontSize: 28,
+        fontFamily: 'Inter_700Bold',
+        color: '#110e0b',
+        marginBottom: 8,
+    },
+    formTitleMobile: {
+        fontSize: 24,
+    },
+    formSubtitle: {
+        fontSize: 16,
+        fontFamily: 'Inter_400Regular',
+        color: '#605a57',
+        textAlign: 'center',
+    },
+    formSubtitleMobile: {
+        fontSize: 14,
     },
     linkContainer: {
         marginTop: 32,

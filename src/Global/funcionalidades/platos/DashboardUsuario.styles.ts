@@ -100,8 +100,55 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
+    scrollContentCentered: {
+        alignItems: 'center',
+    },
+    contentMaxWidth: {
+        width: '100%',
+        maxWidth: 1200,
+    },
+    headerGradientWeb: {
+        paddingHorizontal: 40,
+        paddingTop: 40,
+        paddingBottom: 60,
+    },
+    welcomeTitleWeb: {
+        fontSize: 40,
+    },
+    welcomeSubtitleWeb: {
+        fontSize: 18,
+        maxWidth: 600,
+    },
+    categoriesContainerWeb: {
+        paddingLeft: 40,
+    },
+    categoryPillWeb: {
+        paddingHorizontal: 25,
+        paddingVertical: 12,
+    },
+    categoryTextWeb: {
+        fontSize: 16,
+    },
+    mainSectionWeb: {
+        paddingHorizontal: 40,
+    },
+    featuredCardWeb: {
+        padding: 40,
+    },
+    featuredTitleWeb: {
+        fontSize: 32,
+    },
+    featuredSubWeb: {
+        fontSize: 16,
+        maxWidth: 500,
+    },
+    featuredButtonWeb: {
+        alignSelf: 'flex-start',
+    },
+    featuredEmojiWeb: {
+        fontSize: 100,
+    },
     card: {
-        width: isWeb && width > 1024 ? '31%' : '48%',
         backgroundColor: '#FFFFFF',
         borderRadius: 24,
         shadowColor: '#000',

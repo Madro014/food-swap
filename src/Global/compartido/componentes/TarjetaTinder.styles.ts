@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     },
     infoContainer: {
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        padding: 24,
+        padding: 20, // Reducir de 24
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         position: 'absolute',

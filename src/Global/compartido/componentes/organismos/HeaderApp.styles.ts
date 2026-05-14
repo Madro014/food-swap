@@ -21,6 +21,9 @@ export const styles = StyleSheet.create({
             borderBottomColor: 'rgba(255, 107, 53, 0.08)',
         }),
     },
+    containerSmall: {
+        paddingHorizontal: 15,
+    },
     logoContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -31,11 +34,18 @@ export const styles = StyleSheet.create({
         height: isWeb ? 48 : 40,
         borderRadius: 12,
     },
+    logoImageSmall: {
+        width: 32,
+        height: 32,
+    },
     title: {
         fontSize: isWeb ? 24 : 20,
         fontWeight: '900',
         color: '#FF6B35', // Brand Orange
         letterSpacing: -0.5,
+    },
+    titleSmall: {
+        fontSize: 18,
     },
     userSection: {
         flexDirection: 'row',
@@ -58,6 +68,9 @@ export const styles = StyleSheet.create({
         elevation: 2,
         ...(isWeb && { cursor: 'pointer' } as any),
     },
+    userProfileSmall: {
+        paddingHorizontal: 8,
+    },
     avatar: {
         width: 36,
         height: 36,
@@ -66,6 +79,9 @@ export const styles = StyleSheet.create({
         backgroundColor: '#F3F0EE',
         borderWidth: 1,
         borderColor: '#FEEDE4',
+    },
+    avatarSmall: {
+        marginRight: 0,
     },
     userName: {
         fontSize: 15,
@@ -88,5 +104,9 @@ export const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 2,
         ...(isWeb && { cursor: 'pointer' } as any),
+    },
+    logoutButtonSmall: {
+        width: 40,
+        height: 40,
     }
 });

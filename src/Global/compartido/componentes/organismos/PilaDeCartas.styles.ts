@@ -7,17 +7,18 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingHorizontal: 20,
-        backgroundColor: '#F7F4F2', // Un crema elegante y premium
-        justifyContent: 'center',
+        backgroundColor: '#F7F4F2', 
+        justifyContent: 'flex-start', // Cambiar de center a flex-start
+        paddingTop: isWeb ? 20 : 10, // Un poco de aire arriba
     },
     cardsContainer: {
         width: '100%',
-        height: isWeb ? 580 : 520, // Un poco más alto para lucir la info
-        maxWidth: 480, // Un poco más ancho para web
+        height: isWeb ? 580 : 520, 
+        maxWidth: 480, 
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        marginBottom: 40,
+        marginBottom: 15, // Reducir de 40
     },
     loadingContainer: {
         flex: 1,
@@ -62,9 +63,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 48,
-        paddingVertical: 20,
-        paddingBottom: isWeb ? 120 : 100, // space for the floating dock
+        gap: isWeb ? 20 : 48, // Reducir a 20
+        paddingVertical: 10,
+        paddingBottom: isWeb ? 90 : 80, 
         width: '100%',
         zIndex: 10,
     },

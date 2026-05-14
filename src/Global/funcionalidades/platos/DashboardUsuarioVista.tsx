@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useReducer } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, FlatList, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, FlatList, Image, TouchableOpacity, StatusBar, useWindowDimensions } from 'react-native';
 import { HeaderApp } from '@Global/compartido/componentes/organismos/HeaderApp';
 import { useAuthStore } from '../auth/useAuthStore';
 import { geoService } from '@api/geoService';
@@ -43,6 +43,11 @@ export default function DashboardUsuarioVista() {
     const router = useRouter();
     const [state, dispatch] = useReducer(dashboardReducer, initialState);
     const [categoriaActiva, setCategoriaActiva] = useState('Todos');
+    const { width } = useWindowDimensions();
+    
+    const isMobile = width < 800;
+    const isTablet = width >= 800 && width < 1200;
+    const numColumns = isMobile ? 2 : isTablet ? 3 : 4;
 
     const categorias = ['Todos', 'Populares', 'Cerca de ti', 'Promociones', 'Desayunos'];
 
@@ -117,7 +122,7 @@ export default function DashboardUsuarioVista() {
     const renderTarjetaPlato = ({ item }: { item: Plato }) => (
         <TouchableOpacity 
             activeOpacity={0.9}
-            style={styles.card}
+            style={[styles.card, { width: `${(100 / numColumns) - 2}%` }]}
             onPress={() => {/* Navegar a detalle */}}
         >
             <View style={styles.imageContainer}>
@@ -163,77 +168,94 @@ export default function DashboardUsuarioVista() {
             <StatusBar barStyle="dark-content" />
             <HeaderApp userName={userName} userAvatar={userAvatar} onLogout={handleLogout} />
             
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                {/* Header Section */}
-                <View style={styles.headerGradient}>
-                    <View style={styles.welcomeSection}>
-                        <Text style={styles.welcomeTitle}>¡Hola, {userName}! 👋</Text>
-                        <Text style={styles.welcomeSubtitle}>
-                            ¿Qué te apetece saborear hoy? Tenemos platos increíbles esperando.
-                        </Text>
+            <ScrollView 
+                showsVerticalScrollIndicator={false} 
+                contentContainerStyle={[styles.scrollContent, styles.scrollContentCentered]}
+            >
+                <View style={styles.contentMaxWidth}>
+                    {/* Header Section */}
+                    <View style={[styles.headerGradient, !isMobile && styles.headerGradientWeb]}>
+                        <View style={styles.welcomeSection}>
+                            <Text style={[styles.welcomeTitle, !isMobile && styles.welcomeTitleWeb]}>¡Hola, {userName}! 👋</Text>
+                            <Text style={[styles.welcomeSubtitle, !isMobile && styles.welcomeSubtitleWeb]}>
+                                ¿Qué te apetece saborear hoy? Tenemos platos increíbles esperando.
+                            </Text>
+                        </View>
                     </View>
-                </View>
 
-                {/* Categories Flow */}
-                <View style={styles.categoriesContainer}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {categorias.map((cat) => (
-                            <TouchableOpacity 
-                                key={cat} 
-                                style={[styles.categoryPill, categoriaActiva === cat && styles.categoryPillActive]}
-                                onPress={() => setCategoriaActiva(cat)}
-                            >
-                                <Text style={[styles.categoryText, categoriaActiva === cat && styles.categoryTextActive]}>
-                                    {cat}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-
-                <View style={styles.mainSection}>
-                    {/* Featured Item (Solo si hay platos) */}
-                    {state.platos.length > 0 && (
-                        <View style={styles.featuredCard}>
-                            <View style={styles.featuredInfo}>
-                                <View style={styles.featuredBadge}>
-                                    <Text style={styles.featuredBadgeText}>RECOMENDADO</Text>
-                                </View>
-                                <Text style={styles.featuredTitle}>Descubre nuevos sabores</Text>
-                                <Text style={styles.featuredSub}>
-                                    Explora las creaciones más recientes de los chefs de tu ciudad.
-                                </Text>
-                                <TouchableOpacity style={styles.featuredButton} onPress={() => {/* Acción */}}>
-                                    <Text style={styles.featuredButtonText}>Explorar ahora</Text>
+                    {/* Categories Flow */}
+                    <View style={[styles.categoriesContainer, !isMobile && styles.categoriesContainerWeb]}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {categorias.map((cat) => (
+                                <TouchableOpacity 
+                                    key={cat} 
+                                    style={[
+                                        styles.categoryPill, 
+                                        categoriaActiva === cat && styles.categoryPillActive, 
+                                        !isMobile && styles.categoryPillWeb
+                                    ]}
+                                    onPress={() => setCategoriaActiva(cat)}
+                                >
+                                    <Text style={[
+                                        styles.categoryText, 
+                                        categoriaActiva === cat && styles.categoryTextActive, 
+                                        !isMobile && styles.categoryTextWeb
+                                    ]}>
+                                        {cat}
+                                    </Text>
                                 </TouchableOpacity>
-                            </View>
-                            <Text style={{ fontSize: 60 }}>🥙</Text>
-                        </View>
-                    )}
-
-                    <View style={styles.sectionHeader}>
-                        <Text style={styles.sectionTitle}>Platos Destacados</Text>
-                        <TouchableOpacity>
-                            <Text style={styles.seeAllText}>Ver todos</Text>
-                        </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     </View>
 
-                    {state.platos.length === 0 ? (
-                        <View style={styles.emptyContainer}>
-                            <Text style={styles.emptyIcon}>🥺</Text>
-                            <Text style={styles.emptyText}>Ciudad sin platos hoy</Text>
-                            <Text style={styles.emptySub}>Vuelve pronto, los chefs están preparando cosas ricas.</Text>
+                    <View style={isMobile ? styles.mainSection : [styles.mainSection, styles.mainSectionWeb]}>
+                        {/* Featured Item */}
+                        {state.platos.length > 0 && (
+                            <View style={isMobile ? styles.featuredCard : [styles.featuredCard, styles.featuredCardWeb]}>
+                                <View style={styles.featuredInfo}>
+                                    <View style={styles.featuredBadge}>
+                                        <Text style={styles.featuredBadgeText}>RECOMENDADO</Text>
+                                    </View>
+                                    <Text style={isMobile ? styles.featuredTitle : [styles.featuredTitle, styles.featuredTitleWeb]}>Descubre nuevos sabores</Text>
+                                    <Text style={isMobile ? styles.featuredSub : [styles.featuredSub, styles.featuredSubWeb]}>
+                                        Explora las creaciones más recientes de los chefs de tu ciudad.
+                                    </Text>
+                                    <TouchableOpacity 
+                                        style={isMobile ? styles.featuredButton : [styles.featuredButton, styles.featuredButtonWeb]} 
+                                        onPress={() => {/* Acción */}}
+                                    >
+                                        <Text style={styles.featuredButtonText}>Explorar ahora</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={isMobile ? { fontSize: 60 } : styles.featuredEmojiWeb}>🥙</Text>
+                            </View>
+                        )}
+
+                        <View style={styles.sectionHeader}>
+                            <Text style={styles.sectionTitle}>Platos Destacados</Text>
+                            <TouchableOpacity>
+                                <Text style={styles.seeAllText}>Ver todos</Text>
+                            </TouchableOpacity>
                         </View>
-                    ) : (
-                        <FlatList
-                            data={state.platos}
-                            renderItem={renderTarjetaPlato}
-                            keyExtractor={(item) => item.id}
-                            numColumns={2}
-                            scrollEnabled={false}
-                            columnWrapperStyle={styles.columnWrapper}
-                        />
-                    )}
+
+                        {state.platos.length === 0 ? (
+                            <View style={styles.emptyContainer}>
+                                <Text style={styles.emptyIcon}>🥺</Text>
+                                <Text style={styles.emptyText}>Ciudad sin platos hoy</Text>
+                                <Text style={styles.emptySub}>Vuelve pronto, los chefs están preparando cosas ricas.</Text>
+                            </View>
+                        ) : (
+                            <FlatList
+                                key={`cols-${numColumns}`}
+                                data={state.platos}
+                                renderItem={renderTarjetaPlato}
+                                keyExtractor={(item: Plato) => item.id}
+                                numColumns={numColumns}
+                                scrollEnabled={false}
+                                columnWrapperStyle={styles.columnWrapper}
+                            />
+                        )}
+                    </View>
                 </View>
             </ScrollView>
         </View>

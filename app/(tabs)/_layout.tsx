@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Platform, View, Text, Modal } from 'react-native';
+import { Platform, View, Text, Modal, useWindowDimensions } from 'react-native';
 import * as Location from 'expo-location';
 import { Boton } from '@Global/compartido/componentes/atomos/Boton';
 import { useAuthStore } from '@Global/funcionalidades/auth/useAuthStore';
@@ -15,6 +15,7 @@ export default function TabLayout() {
   const [alertaLocalizacion, setAlertaLocalizacion] = useState(false);
   const [mostrarAyudaWeb, setMostrarAyudaWeb] = useState(false);
   const { alcanceKm } = useAuthStore();
+  const { width } = useWindowDimensions();
 
   const solicitarUbicacion = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -67,7 +68,7 @@ export default function TabLayout() {
           tabBarButton: HapticTab,
           tabBarShowLabel: true,
           tabBarLabelStyle: estilosTab.tabBarLabel,
-          tabBarStyle: getTabBarStyle(),
+          tabBarStyle: getTabBarStyle(width),
         }}>
         <Tabs.Screen
           name="index"
